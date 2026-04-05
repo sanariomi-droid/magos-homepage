@@ -1,1006 +1,1398 @@
-import { useState } from "react";
-import jsPDF from "jspdf";
-import html2canvas from "html2canvas";
-
-export default function App() {
-  const [activeTab, setActiveTab] = useState("home");
-
-  const [projectName, setProjectName] = useState("MAGOS Structural Risk Review");
-  const [clientName, setClientName] = useState("의뢰기관명");
-  const [reviewId, setReviewId] = useState("MAGOS-2026-001");
-
-  const [psi, setPsi] = useState(50);
-  const [dri, setDri] = useState(50);
-  const [bii, setBii] = useState(50);
-  const [cli, setCli] = useState(50);
-
-  const [wP, setWP] = useState(0.3);
-  const [wD, setWD] = useState(0.3);
-  const [wB, setWB] = useState(0.2);
-  const [wC, setWC] = useState(0.2);
-
-  const [kd, setKd] = useState(1.0);
-  const [ki, setKi] = useState(1.0);
-
-  const [result, setResult] = useState(null);
-  const [error, setError] = useState("");
-
-  const today = new Date();
-  const issuedDate = `${today.getFullYear()}.${String(today.getMonth() + 1).padStart(2, "0")}.${String(
-    today.getDate()
-  ).padStart(2, "0")}`;
-
-  const clamp = (value, min, max) => {
-    const num = Number(value);
-    if (Number.isNaN(num)) return min;
-    return Math.min(Math.max(num, min), max);
-  };
-
-  const getRiskGrade = (score) => {
-    if (score >= 85) return "매우 높음";
-    if (score >= 70) return "높음";
-    if (score >= 55) return "보통";
-    if (score >= 40) return "낮음";
-    return "매우 낮음";
-  };
-
-  const getDecisionText = (score) => {
-    if (score >= 85) {
-      return "즉시 정밀검토, 사용제한 검토 및 긴급 대응계획 수립이 필요한 수준입니다.";
-    }
-    if (score >= 70) {
-      return "우선관리 대상이며, 정밀점검 및 보강·보수 계획 수립이 권장됩니다.";
-    }
-    if (score >= 55) {
-      return "지속관찰 대상이며, 정기점검 강화 및 상태변화 모니터링이 필요합니다.";
-    }
-    if (score >= 40) {
-      return "기본 관리수준에서 정기 모니터링을 유지할 필요가 있습니다.";
-    }
-    return "현재 기준으로 상대적으로 안정적인 수준으로 판단됩니다.";
-  };
-
-  const getGradeColor = (grade) => {
-    if (grade === "매우 높음") return "#ff5f57";
-    if (grade === "높음") return "#ff9f43";
-    if (grade === "보통") return "#ffd166";
-    if (grade === "낮음") return "#7bd389";
-    return "#6ecbff";
-  };
-
-  const calculateMRI = () => {
-    setError("");
-
-    const p = clamp(psi, 0, 100);
-    const d = clamp(dri, 0, 100);
-    const b = clamp(bii, 0, 100);
-    const c = clamp(cli, 0, 100);
-
-    const wp = Number(wP);
-    const wd = Number(wD);
-    const wb = Number(wB);
-    const wc = Number(wC);
-
-    const kdValue = clamp(kd, 1.0, 1.2);
-    const kiValue = clamp(ki, 1.0, 1.15);
-
-    const weightSum = wp + wd + wb + wc;
-
-    if (Math.abs(weightSum - 1.0) > 0.001) {
-      setResult(null);
-      setError("가중치 합은 반드시 1.00이어야 합니다.");
-      return;
-    }
-
-    const mriBase = wp * p + wd * d + wb * b + wc * c;
-    const mriFinal = 100 - (100 - mriBase) / (kdValue * kiValue);
-    const mriFinalClamped = Math.min(Math.max(mriFinal, 0), 100);
-
-    const grade = getRiskGrade(mriFinalClamped);
-    const decision = getDecisionText(mriFinalClamped);
-
-    setResult({
-      psi: p.toFixed(1),
-      dri: d.toFixed(1),
-      bii: b.toFixed(1),
-      cli: c.toFixed(1),
-      wP: wp.toFixed(2),
-      wD: wd.toFixed(2),
-      wB: wb.toFixed(2),
-      wC: wc.toFixed(2),
-      kd: kdValue.toFixed(2),
-      ki: kiValue.toFixed(2),
-      weightSum: weightSum.toFixed(2),
-      mriBase: mriBase.toFixed(2),
-      mriFinal: mriFinalClamped.toFixed(2),
-      grade,
-      decision,
-      gradeColor: getGradeColor(grade),
-    });
-  };
-
-  const downloadPDF = async () => {
-    const element = document.getElementById("certificate-area");
-
-    if (!result || !element) {
-      alert("결과를 먼저 계산하세요.");
-      return;
-    }
-
-    const canvas = await html2canvas(element, {
-      backgroundColor: "#ffffff",
-      scale: 2,
-      useCORS: true,
-    });
-
-    const imgData = canvas.toDataURL("image/png");
-    const pdf = new jsPDF("p", "mm", "a4");
-
-    const pageWidth = 210;
-    const pageHeight = 297;
-    const margin = 8;
-    const usableWidth = pageWidth - margin * 2;
-    const imgHeight = (canvas.height * usableWidth) / canvas.width;
-
-    let renderHeight = imgHeight;
-    if (renderHeight > pageHeight - margin * 2) {
-      renderHeight = pageHeight - margin * 2;
-    }
-
-    pdf.addImage(imgData, "PNG", margin, margin, usableWidth, renderHeight);
-    pdf.save(`MAGOS_Certificate_${reviewId}.pdf`);
-  };
-
-  const pageStyle = {
-    minHeight: "100vh",
-    backgroundColor: "#020b2d",
-    color: "white",
-    fontFamily: "Malgun Gothic, Apple SD Gothic Neo, sans-serif",
-  };
-
-  const navStyle = {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    padding: "18px 36px",
-    borderBottom: "1px solid rgba(255,255,255,0.12)",
-    position: "sticky",
-    top: 0,
-    backgroundColor: "#020b2d",
-    zIndex: 20,
-  };
-
-  const navLeftStyle = {
-    display: "flex",
-    alignItems: "center",
-    gap: "12px",
-  };
-
-  const logoTextStyle = {
-    fontSize: "22px",
-    fontWeight: "900",
-    letterSpacing: "0.4px",
-  };
-
-  const navMenuStyle = {
-    display: "flex",
-    gap: "10px",
-    flexWrap: "wrap",
-  };
-
-  const getNavButtonStyle = (tab) => ({
-    backgroundColor: activeTab === tab ? "#2748a6" : "transparent",
-    color: "white",
-    border: "1px solid rgba(255,255,255,0.18)",
-    padding: "10px 16px",
-    borderRadius: "10px",
-    cursor: "pointer",
-    fontSize: "15px",
-    fontWeight: "700",
-  });
-
-  const sectionWrapStyle = {
-    maxWidth: "1240px",
-    margin: "0 auto",
-    padding: "48px 36px 84px 36px",
-  };
-
-  const sectionTitleStyle = {
-    fontSize: "34px",
-    fontWeight: "800",
-    margin: "0 0 18px 0",
-  };
-
-  const sectionDescStyle = {
-    fontSize: "17px",
-    color: "#d7ddff",
-    lineHeight: 1.8,
-    marginBottom: "26px",
-  };
-
-  const heroStyle = {
-    display: "grid",
-    gridTemplateColumns: "1.25fr 1fr",
-    gap: "28px",
-    alignItems: "center",
-    marginTop: "8px",
-  };
-
-  const heroCardStyle = {
-    backgroundColor: "#0d173f",
-    borderRadius: "20px",
-    padding: "38px",
-    boxShadow: "0 12px 30px rgba(0,0,0,0.25)",
-  };
-
-  const titleStyle = {
-    fontSize: "54px",
-    fontWeight: "900",
-    lineHeight: 1.15,
-    margin: "0 0 18px 0",
-  };
-
-  const subTextStyle = {
-    fontSize: "19px",
-    lineHeight: 1.8,
-    color: "#d7ddff",
-    marginBottom: "26px",
-  };
-
-  const buttonRowStyle = {
-    display: "flex",
-    gap: "12px",
-    flexWrap: "wrap",
-    marginTop: "18px",
-  };
-
-  const primaryButtonStyle = {
-    backgroundColor: "#82c76b",
-    color: "white",
-    border: "none",
-    padding: "14px 22px",
-    borderRadius: "10px",
-    fontSize: "16px",
-    fontWeight: "800",
-    cursor: "pointer",
-  };
-
-  const secondaryButtonStyle = {
-    backgroundColor: "#78a9ff",
-    color: "white",
-    border: "none",
-    padding: "14px 22px",
-    borderRadius: "10px",
-    fontSize: "16px",
-    fontWeight: "800",
-    cursor: "pointer",
-  };
-
-  const statBoxStyle = {
-    backgroundColor: "#111d52",
-    borderRadius: "18px",
-    padding: "24px",
-    marginBottom: "16px",
-  };
-
-  const cardGridStyle = {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
-    gap: "18px",
-  };
-
-  const serviceCardStyle = {
-    backgroundColor: "#0d173f",
-    borderRadius: "16px",
-    padding: "22px",
-    border: "1px solid rgba(255,255,255,0.08)",
-  };
-
-  const serviceTitleStyle = {
-    fontSize: "22px",
-    fontWeight: "800",
-    marginBottom: "10px",
-  };
-
-  const serviceTextStyle = {
-    fontSize: "15px",
-    lineHeight: 1.8,
-    color: "#d7ddff",
-  };
-
-  const aboutGridStyle = {
-    display: "grid",
-    gridTemplateColumns: "1fr 1fr",
-    gap: "20px",
-  };
-
-  const aboutCardStyle = {
-    backgroundColor: "#0d173f",
-    borderRadius: "16px",
-    padding: "26px",
-  };
-
-  const contactBoxStyle = {
-    backgroundColor: "#0d173f",
-    borderRadius: "18px",
-    padding: "28px",
-    lineHeight: 1.9,
-  };
-
-  const footerStyle = {
-    borderTop: "1px solid rgba(255,255,255,0.12)",
-    padding: "24px 40px",
-    color: "#b8c4ff",
-    textAlign: "center",
-    fontSize: "14px",
-  };
-
-  const demoGridStyle = {
-    display: "grid",
-    gridTemplateColumns: "380px 1fr",
-    gap: "24px",
-    alignItems: "start",
-  };
-
-  const inputPanelStyle = {
-    backgroundColor: "#0d173f",
-    borderRadius: "18px",
-    padding: "24px",
-    border: "1px solid rgba(255,255,255,0.08)",
-  };
-
-  const demoLabelStyle = {
-    display: "block",
-    marginTop: "10px",
-    marginBottom: "6px",
-    fontSize: "15px",
-    fontWeight: "700",
-    color: "#ffffff",
-  };
-
-  const demoInputStyle = {
-    width: "100%",
-    height: "38px",
-    fontSize: "15px",
-    padding: "4px 10px",
-    marginBottom: "12px",
-    boxSizing: "border-box",
-    borderRadius: "8px",
-    border: "1px solid #d6ddee",
-  };
-
-  const renderHome = () => (
-    <div style={sectionWrapStyle}>
-      <div style={heroStyle}>
-        <div style={heroCardStyle}>
-          <div style={{ fontSize: "15px", color: "#9fb4ff", marginBottom: "14px", fontWeight: "700" }}>
-            MAGOS STRUCTURE ENGINEERING LAB
-          </div>
-
-          <h1 style={titleStyle}>
-            Structural Risk
-            <br />
-            & Engineering Decision
-          </h1>
-
-          <div style={subTextStyle}>
-            MAGOS는 구조기술사의 공학적 판단을 데이터와 리스크 정량화로 연결하여,
-            구조안전 검토·의사결정·인증서 발행까지 이어지는 실무형 플랫폼을 지향합니다.
-          </div>
-
-          <div style={buttonRowStyle}>
-            <button style={primaryButtonStyle} onClick={() => setActiveTab("demo")}>
-              데모 보기
-            </button>
-            <button style={secondaryButtonStyle} onClick={() => setActiveTab("services")}>
-              서비스 보기
-            </button>
-          </div>
-        </div>
-
-        <div>
-          <div style={statBoxStyle}>
-            <div style={{ fontSize: "14px", color: "#9fb4ff", marginBottom: "8px" }}>핵심 기능</div>
-            <div style={{ fontSize: "26px", fontWeight: "800", marginBottom: "10px" }}>
-              MRI 기반 구조 리스크 정량평가
-            </div>
-            <div style={{ color: "#d7ddff", lineHeight: 1.8 }}>
-              PSI, DRI, BII, CLI 기반 MRI 산정과 보정계수 적용을 통해
-              구조 리스크를 수치와 등급으로 제시합니다.
-            </div>
-          </div>
-
-          <div style={statBoxStyle}>
-            <div style={{ fontSize: "14px", color: "#9fb4ff", marginBottom: "8px" }}>활용 분야</div>
-            <div style={{ color: "#d7ddff", lineHeight: 1.9 }}>
-              보험 인수심사 / 구조 검토 / 유지관리 / 법원 감정 / 건설 포렌식 / 공학 판단 기록
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div style={{ marginTop: "56px" }}>
-        <h2 style={sectionTitleStyle}>왜 MAGOS인가</h2>
-        <div style={sectionDescStyle}>
-          경험 중심 판단에만 의존하던 구조 검토를, 정량화된 리스크 점수와 문서화된 인증서로 연결합니다.
-        </div>
-
-        <div style={cardGridStyle}>
-          <div style={serviceCardStyle}>
-            <div style={serviceTitleStyle}>정량화</div>
-            <div style={serviceTextStyle}>
-              구조 리스크를 점수와 등급으로 제시하여 의사결정의 객관성을 높입니다.
-            </div>
-          </div>
-
-          <div style={serviceCardStyle}>
-            <div style={serviceTitleStyle}>기술사 판단</div>
-            <div style={serviceTextStyle}>
-              구조기술사의 검토 경험과 공학 판단을 문서화 가능한 형태로 정리합니다.
-            </div>
-          </div>
-
-          <div style={serviceCardStyle}>
-            <div style={serviceTitleStyle}>인증서 발행</div>
-            <div style={serviceTextStyle}>
-              PDF 인증서 형태로 결과를 정리하여 실무 제출 문서로 활용할 수 있습니다.
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-
-  const renderServices = () => (
-    <div style={sectionWrapStyle}>
-      <h2 style={sectionTitleStyle}>서비스</h2>
-      <div style={sectionDescStyle}>
-        MAGOS는 구조기술사의 전문성을 기반으로 아래와 같은 서비스 패키지를 제공합니다.
-      </div>
-
-      <div style={cardGridStyle}>
-        <div style={serviceCardStyle}>
-          <div style={serviceTitleStyle}>보험사용 리스크 평가</div>
-          <div style={serviceTextStyle}>
-            보험 인수심사를 위한 구조 리스크 정량평가와 인증서 제공
-          </div>
-        </div>
-
-        <div style={serviceCardStyle}>
-          <div style={serviceTitleStyle}>설계 검토 지원</div>
-          <div style={serviceTextStyle}>
-            설계안의 구조 안전성 및 위험요소를 정리한 검토 문서 제공
-          </div>
-        </div>
-
-        <div style={serviceCardStyle}>
-          <div style={serviceTitleStyle}>시공·감리 리스크 검토</div>
-          <div style={serviceTextStyle}>
-            시공 중 구조적 리스크와 책임 노출 요소를 점검하는 실무형 검토
-          </div>
-        </div>
-
-        <div style={serviceCardStyle}>
-          <div style={serviceTitleStyle}>유지관리용 평가</div>
-          <div style={serviceTextStyle}>
-            시설물 열화 상태와 유지관리 우선순위 판단을 위한 정량 평가
-          </div>
-        </div>
-
-        <div style={serviceCardStyle}>
-          <div style={serviceTitleStyle}>법원 감정 보조</div>
-          <div style={serviceTextStyle}>
-            구조기술사의 공학 판단을 수치화하여 감정 보조자료로 정리
-          </div>
-        </div>
-
-        <div style={serviceCardStyle}>
-          <div style={serviceTitleStyle}>건설 포렌식</div>
-          <div style={serviceTextStyle}>
-            사고 전후 리스크 비교, 책임 및 원인 분석을 위한 정리 문서 제공
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-
-  const renderDemo = () => (
-    <div style={sectionWrapStyle}>
-      <h2 style={sectionTitleStyle}>데모</h2>
-      <div style={sectionDescStyle}>
-        MRI 계산기와 구조안전 리스크 인증서 발행 기능을 체험할 수 있습니다.
-      </div>
-
-      <div style={demoGridStyle}>
-        <div style={inputPanelStyle}>
-          <div style={{ fontSize: "22px", fontWeight: "800", marginBottom: "16px" }}>
-            입력 패널
-          </div>
-
-          <div style={{ fontSize: "16px", fontWeight: "800", marginBottom: "8px", color: "#9fb4ff" }}>
-            기본 정보
-          </div>
-
-          <label style={demoLabelStyle}>프로젝트명</label>
-          <input
-            value={projectName}
-            onChange={(e) => setProjectName(e.target.value)}
-            style={demoInputStyle}
-          />
-
-          <label style={demoLabelStyle}>의뢰기관</label>
-          <input
-            value={clientName}
-            onChange={(e) => setClientName(e.target.value)}
-            style={demoInputStyle}
-          />
-
-          <label style={demoLabelStyle}>문서번호</label>
-          <input
-            value={reviewId}
-            onChange={(e) => setReviewId(e.target.value)}
-            style={demoInputStyle}
-          />
-
-          <div style={{ fontSize: "16px", fontWeight: "800", margin: "10px 0 8px 0", color: "#9fb4ff" }}>
-            리스크 점수
-          </div>
-
-          <label style={demoLabelStyle}>PSI</label>
-          <input type="number" value={psi} onChange={(e) => setPsi(e.target.value)} style={demoInputStyle} />
-
-          <label style={demoLabelStyle}>DRI</label>
-          <input type="number" value={dri} onChange={(e) => setDri(e.target.value)} style={demoInputStyle} />
-
-          <label style={demoLabelStyle}>BII</label>
-          <input type="number" value={bii} onChange={(e) => setBii(e.target.value)} style={demoInputStyle} />
-
-          <label style={demoLabelStyle}>CLI</label>
-          <input type="number" value={cli} onChange={(e) => setCli(e.target.value)} style={demoInputStyle} />
-
-          <div style={{ fontSize: "16px", fontWeight: "800", margin: "10px 0 8px 0", color: "#9fb4ff" }}>
-            가중치
-          </div>
-
-          <label style={demoLabelStyle}>wP</label>
-          <input type="number" step="0.01" value={wP} onChange={(e) => setWP(e.target.value)} style={demoInputStyle} />
-
-          <label style={demoLabelStyle}>wD</label>
-          <input type="number" step="0.01" value={wD} onChange={(e) => setWD(e.target.value)} style={demoInputStyle} />
-
-          <label style={demoLabelStyle}>wB</label>
-          <input type="number" step="0.01" value={wB} onChange={(e) => setWB(e.target.value)} style={demoInputStyle} />
-
-          <label style={demoLabelStyle}>wC</label>
-          <input type="number" step="0.01" value={wC} onChange={(e) => setWC(e.target.value)} style={demoInputStyle} />
-
-          <div style={{ fontSize: "16px", fontWeight: "800", margin: "10px 0 8px 0", color: "#9fb4ff" }}>
-            보정계수
-          </div>
-
-          <label style={demoLabelStyle}>Kd</label>
-          <input type="number" step="0.01" value={kd} onChange={(e) => setKd(e.target.value)} style={demoInputStyle} />
-
-          <label style={demoLabelStyle}>Ki</label>
-          <input type="number" step="0.01" value={ki} onChange={(e) => setKi(e.target.value)} style={demoInputStyle} />
-
-          <div style={{ marginTop: "18px", display: "flex", gap: "10px", flexWrap: "wrap" }}>
-            <button style={primaryButtonStyle} onClick={calculateMRI}>
-              결과 계산
-            </button>
-            <button style={secondaryButtonStyle} onClick={downloadPDF}>
-              인증서 PDF 다운로드
-            </button>
-          </div>
-
-          {error && (
-            <div style={{ marginTop: "14px", color: "#ffaaaa", fontWeight: "700" }}>
-              {error}
-            </div>
-          )}
-        </div>
-
-        <div>
-          {!result && (
-            <div style={inputPanelStyle}>
-              <div style={{ fontSize: "24px", fontWeight: "800", marginBottom: "12px" }}>
-                인증서 미리보기
-              </div>
-              <div style={{ color: "#d7ddff", lineHeight: 1.9 }}>
-                좌측 입력값을 넣고 <strong>결과 계산</strong>을 누르면 이 영역에 구조안전 리스크 인증서가 표시됩니다.
-              </div>
-            </div>
-          )}
-
-          {result && (
-            <div
-              id="certificate-area"
-              style={{
-                backgroundColor: "#ffffff",
-                color: "#111111",
-                width: "100%",
-                borderRadius: "18px",
-                overflow: "hidden",
-                boxShadow: "0 12px 40px rgba(0,0,0,0.35)",
-                border: "1px solid #d9deea",
-              }}
-            >
-              <div
-                style={{
-                  background: "linear-gradient(135deg, #0b1d58 0%, #1c3f9f 100%)",
-                  color: "white",
-                  padding: "24px 34px 22px 34px",
-                }}
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "18px",
-                  }}
-                >
-                  <div
-                    style={{
-                      width: "84px",
-                      height: "84px",
-                      backgroundColor: "white",
-                      borderRadius: "14px",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      padding: "8px",
-                      flexShrink: 0,
-                    }}
-                  >
-                    <img
-                      src="/magos_logo.png"
-                      alt="MAGOS 로고"
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        objectFit: "contain",
-                      }}
-                    />
-                  </div>
-
-                  <div>
-                    <div style={{ fontSize: "16px", letterSpacing: "1px", opacity: 0.9 }}>
-                      MAGOS STRUCTURE ENGINEERING LAB
-                    </div>
-                    <div style={{ fontSize: "32px", fontWeight: "800", marginTop: "6px" }}>
-                      STRUCTURAL RISK CERTIFICATE
-                    </div>
-                    <div style={{ fontSize: "18px", marginTop: "6px", opacity: 0.95 }}>
-                      구조안전 리스크 정량평가 인증서
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div style={{ padding: "30px 34px 34px 34px" }}>
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    gap: "20px",
-                    flexWrap: "wrap",
-                    marginBottom: "26px",
-                  }}
-                >
-                  <div>
-                    <div style={{ fontSize: "14px", color: "#5d6b8a", marginBottom: "4px" }}>프로젝트명</div>
-                    <div style={{ fontSize: "24px", fontWeight: "700" }}>{projectName}</div>
-                  </div>
-
-                  <div style={{ minWidth: "240px" }}>
-                    <div style={{ fontSize: "14px", color: "#5d6b8a", marginBottom: "4px" }}>문서번호</div>
-                    <div style={{ fontSize: "18px", fontWeight: "700" }}>{reviewId}</div>
-
-                    <div style={{ fontSize: "14px", color: "#5d6b8a", marginTop: "10px", marginBottom: "4px" }}>발행일</div>
-                    <div style={{ fontSize: "18px", fontWeight: "700" }}>{issuedDate}</div>
-                  </div>
-                </div>
-
-                <div
-                  style={{
-                    border: "1px solid #d9deea",
-                    borderRadius: "14px",
-                    padding: "18px 22px",
-                    marginBottom: "24px",
-                    backgroundColor: "#f7f9fc",
-                  }}
-                >
-                  <div style={{ fontSize: "14px", color: "#5d6b8a", marginBottom: "6px" }}>의뢰기관</div>
-                  <div style={{ fontSize: "20px", fontWeight: "700" }}>{clientName}</div>
-                </div>
-
-                <div
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: "1.3fr 1fr",
-                    gap: "22px",
-                    marginBottom: "24px",
-                  }}
-                >
-                  <div
-                    style={{
-                      border: "1px solid #d9deea",
-                      borderRadius: "16px",
-                      padding: "22px",
-                      backgroundColor: "#ffffff",
-                    }}
-                  >
-                    <div style={{ fontSize: "16px", color: "#5d6b8a", marginBottom: "14px", fontWeight: "700" }}>
-                      평가 결과
-                    </div>
-
-                    <div style={{ fontSize: "14px", color: "#5d6b8a" }}>최종 MRI</div>
-                    <div style={{ fontSize: "52px", fontWeight: "800", lineHeight: 1.1, margin: "6px 0 14px 0" }}>
-                      {result.mriFinal}
-                    </div>
-
-                    <div style={{ fontSize: "14px", color: "#5d6b8a" }}>위험 등급</div>
-                    <div
-                      style={{
-                        display: "inline-block",
-                        marginTop: "8px",
-                        backgroundColor: result.gradeColor,
-                        color: "#132033",
-                        fontWeight: "800",
-                        fontSize: "20px",
-                        padding: "10px 18px",
-                        borderRadius: "999px",
-                      }}
-                    >
-                      {result.grade}
-                    </div>
-
-                    <div style={{ marginTop: "22px", fontSize: "14px", color: "#5d6b8a" }}>판단 의견</div>
-                    <div style={{ marginTop: "8px", fontSize: "18px", fontWeight: "700", lineHeight: 1.6 }}>
-                      {result.decision}
-                    </div>
-                  </div>
-
-                  <div
-                    style={{
-                      border: "1px solid #d9deea",
-                      borderRadius: "16px",
-                      padding: "22px",
-                      backgroundColor: "#f9fbff",
-                    }}
-                  >
-                    <div style={{ fontSize: "16px", color: "#5d6b8a", marginBottom: "14px", fontWeight: "700" }}>
-                      입력 및 보정 정보
-                    </div>
-
-                    <div style={{ fontSize: "15px", lineHeight: 1.9 }}>
-                      <div>PSI : {result.psi}</div>
-                      <div>DRI : {result.dri}</div>
-                      <div>BII : {result.bii}</div>
-                      <div>CLI : {result.cli}</div>
-
-                      <hr style={{ margin: "14px 0", borderColor: "#d9deea" }} />
-
-                      <div>wP : {result.wP}</div>
-                      <div>wD : {result.wD}</div>
-                      <div>wB : {result.wB}</div>
-                      <div>wC : {result.wC}</div>
-                      <div>가중치 합 : {result.weightSum}</div>
-
-                      <hr style={{ margin: "14px 0", borderColor: "#d9deea" }} />
-
-                      <div>Kd : {result.kd}</div>
-                      <div>Ki : {result.ki}</div>
-                      <div>기본 MRI : {result.mriBase}</div>
-                    </div>
-                  </div>
-                </div>
-
-                <div
-                  style={{
-                    border: "1px solid #d9deea",
-                    borderRadius: "16px",
-                    padding: "20px 22px",
-                    marginBottom: "24px",
-                    backgroundColor: "#ffffff",
-                  }}
-                >
-                  <div style={{ fontSize: "16px", color: "#5d6b8a", marginBottom: "10px", fontWeight: "700" }}>
-                    적용식 및 검토 기준
-                  </div>
-                  <div style={{ fontSize: "15px", lineHeight: 1.9 }}>
-                    <div>적용식 1 : MRI = wP×PSI + wD×DRI + wB×BII + wC×CLI</div>
-                    <div>적용식 2 : MRI_final = 100 - (100 - MRI) / (Kd × Ki)</div>
-                    <div style={{ marginTop: "8px", color: "#4e5c79" }}>
-                      본 결과는 입력된 자료, 가중치 및 보정계수에 기초한 정량평가 결과이며, 최종 설계·보수·보강
-                      의사결정 시에는 현장조사, 도면검토, 구조검토 및 기술사 판단이 함께 반영되어야 합니다.
-                    </div>
-                  </div>
-                </div>
-
-                <div
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: "1fr 1fr",
-                    gap: "18px",
-                    marginBottom: "28px",
-                  }}
-                >
-                  <div
-                    style={{
-                      border: "1px solid #d9deea",
-                      borderRadius: "16px",
-                      minHeight: "110px",
-                      padding: "18px 20px",
-                    }}
-                  >
-                    <div style={{ fontSize: "14px", color: "#5d6b8a", marginBottom: "12px" }}>검토 책임자</div>
-                    <div style={{ fontSize: "22px", fontWeight: "800" }}>김황준</div>
-                    <div style={{ marginTop: "6px", fontSize: "16px" }}>토목구조기술사</div>
-                    <div style={{ marginTop: "18px", fontSize: "14px", color: "#5d6b8a" }}>서명 / 날인</div>
-                  </div>
-
-                  <div
-                    style={{
-                      border: "1px solid #d9deea",
-                      borderRadius: "16px",
-                      minHeight: "110px",
-                      padding: "18px 20px",
-                    }}
-                  >
-                    <div style={{ fontSize: "14px", color: "#5d6b8a", marginBottom: "12px" }}>발행 기관</div>
-                    <div style={{ fontSize: "22px", fontWeight: "800" }}>MAGOS Structure Engineering Lab</div>
-                    <div style={{ marginTop: "6px", fontSize: "16px" }}>Structural Risk & Engineering Decision</div>
-                    <div style={{ marginTop: "18px", fontSize: "14px", color: "#5d6b8a" }}>공식 검토 문서</div>
-                  </div>
-                </div>
-
-                <div
-                  style={{
-                    textAlign: "center",
-                    borderTop: "2px solid #10307a",
-                    paddingTop: "16px",
-                    color: "#233659",
-                  }}
-                >
-                  <div style={{ fontSize: "20px", fontWeight: "800" }}>MAGOS Structure Engineering Lab</div>
-                  <div style={{ marginTop: "6px", fontSize: "14px" }}>
-                    건강한 파동과 기술을 연결하는 구조설계 전문가
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-
-  const renderAbout = () => (
-    <div style={sectionWrapStyle}>
-      <h2 style={sectionTitleStyle}>회사 소개</h2>
-
-      <div style={aboutGridStyle}>
-        <div style={aboutCardStyle}>
-          <div style={{ fontSize: "24px", fontWeight: "800", marginBottom: "12px" }}>
-            MAGOS Structure Engineering Lab
-          </div>
-          <div style={serviceTextStyle}>
-            구조안전, 리스크, 데이터 신뢰성, 공학적 의사결정을 연결하는 실무형 구조기술사 사무소입니다.
-            구조기술사의 판단을 문서화·정량화·인증서화하는 방향으로 서비스를 확장하고 있습니다.
-          </div>
-        </div>
-
-        <div style={aboutCardStyle}>
-          <div style={{ fontSize: "24px", fontWeight: "800", marginBottom: "12px" }}>
-            대표 소개
-          </div>
-          <div style={serviceTextStyle}>
-            김황준
-            <br />
-            토목구조기술사
-            <br />
-            구조안전 검토, 유지관리, 리스크 평가, 구조기술 기반 서비스 개발
-          </div>
-        </div>
-      </div>
-
-      <div style={{ marginTop: "24px" }}>
-        <div style={aboutCardStyle}>
-          <div style={{ fontSize: "24px", fontWeight: "800", marginBottom: "12px" }}>
-            브랜드 철학
-          </div>
-          <div style={serviceTextStyle}>
-            건강한 파동과 기술을 연결하는 구조설계 전문가
-            <br />
-            MAGOS는 구조기술사의 전문성과 데이터 기반 판단을 결합하여,
-            구조안전 의사결정을 보다 명확하고 신뢰성 있게 만드는 것을 목표로 합니다.
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-
-  const renderContact = () => (
-    <div style={sectionWrapStyle}>
-      <h2 style={sectionTitleStyle}>문의</h2>
-      <div style={sectionDescStyle}>
-        구조 검토, 리스크 평가, 인증서 발행, 협업 및 제안 문의를 받습니다.
-      </div>
-
-      <div style={contactBoxStyle}>
-        <div style={{ fontSize: "22px", fontWeight: "800", marginBottom: "10px" }}>
-          MAGOS Structure Engineering Lab
-        </div>
-        <div>대표: 김황준</div>
-        <div>자격: 토목구조기술사</div>
-        <div>문의 이메일: contact@magos.co.kr</div>
-        <div>홈페이지 도메인: magos.co.kr</div>
-        <div style={{ marginTop: "14px", color: "#d7ddff" }}>
-          문의 폼, 의뢰서 업로드, 상담 예약 기능은 다음 단계에서 추가할 수 있습니다.
-        </div>
-      </div>
-    </div>
-  );
-
-  const renderPage = () => {
-    if (activeTab === "home") return renderHome();
-    if (activeTab === "services") return renderServices();
-    if (activeTab === "demo") return renderDemo();
-    if (activeTab === "about") return renderAbout();
-    if (activeTab === "contact") return renderContact();
-    return renderHome();
-  };
+import { useMemo, useState } from "react";
+
+const BRAND = {
+  name: "MAGOS",
+  subtitle: "MAGOS STRUCTURE ENGINEERING LAB",
+  headline: "Structural Risk & Engineering Decision",
+  description:
+    "MAGOS는 구조기술사의 공학적 판단을 데이터와 리스크 정량화로 연결하여, 구조안전 검토·의사결정·인증서 발행까지 이어지는 실무형 플랫폼을 지향합니다.",
+};
+
+const SERVICES = [
+  {
+    title: "보험 인수심사 지원",
+    desc: "구조 리스크를 정량화하여 보험 인수심사와 위험도 평가의 객관성을 높입니다.",
+  },
+  {
+    title: "구조 검토 지원",
+    desc: "설계안, 시공안, 가설구조, 유지관리 안건의 리스크를 수치와 등급으로 제시합니다.",
+  },
+  {
+    title: "유지관리 평가",
+    desc: "노후화, 열화, 운영 영향 요소를 반영하여 유지관리 우선순위 판단에 활용합니다.",
+  },
+  {
+    title: "법원 감정 · 포렌식",
+    desc: "기술사 판단 근거와 리스크 기록을 정리하여 분쟁·감정 대응 자료로 연결합니다.",
+  },
+  {
+    title: "기술사 판단 기록",
+    desc: "전문가 의견과 보정 구조를 문서화하여 공학적 판단의 추적성과 설명가능성을 높입니다.",
+  },
+  {
+    title: "PDF 인증서 발행",
+    desc: "평가 결과를 제출용 문서로 정리하여 실무 제출, 내부 보고, 상담 자료로 활용합니다.",
+  },
+];
+
+const DEFAULT_EXPERTS = [
+  {
+    name: "전문가 1",
+    role: "lead",
+    judgementType: "conditional",
+    confidence: 1.0,
+    damping: 1.0,
+  },
+  {
+    name: "전문가 2",
+    role: "field",
+    judgementType: "investigate",
+    confidence: 1.0,
+    damping: 1.0,
+  },
+  {
+    name: "전문가 3",
+    role: "assistant",
+    judgementType: "normal",
+    confidence: 0.9,
+    damping: 1.0,
+  },
+];
+
+function clamp(value, min, max) {
+  return Math.max(min, Math.min(max, value));
+}
+
+function scrollToSection(id) {
+  const target = document.getElementById(id);
+  if (target) {
+    target.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+}
+
+function getGrade(score) {
+  if (score >= 85) return "A";
+  if (score >= 70) return "B";
+  if (score >= 55) return "C";
+  if (score >= 40) return "D";
+  return "E";
+}
+
+function getGradeLabel(grade) {
+  switch (grade) {
+    case "A":
+      return "안정";
+    case "B":
+      return "관찰";
+    case "C":
+      return "주의";
+    case "D":
+      return "경고";
+    default:
+      return "위험";
+  }
+}
+
+function getGradeColor(grade) {
+  switch (grade) {
+    case "A":
+      return "#67d17a";
+    case "B":
+      return "#9fc66b";
+    case "C":
+      return "#f0c35f";
+    case "D":
+      return "#ff9d57";
+    default:
+      return "#ff6b6b";
+  }
+}
+
+function getJudgementMeta(type) {
+  switch (type) {
+    case "critical":
+      return { label: "즉시 조치", weight: 12 };
+    case "conditional":
+      return { label: "조건부 보정", weight: 7 };
+    case "investigate":
+      return { label: "추가조사 권고", weight: 4 };
+    case "normal":
+    default:
+      return { label: "일반 판단", weight: 0 };
+  }
+}
+
+function calculateBaseMRI(calc) {
+  const wP = Number(calc.wP);
+  const wD = Number(calc.wD);
+  const wB = Number(calc.wB);
+  const wC = Number(calc.wC);
+
+  const totalWeight = wP + wD + wB + wC || 1;
+
+  const psi = clamp(Number(calc.psi), 0, 100);
+  const dri = clamp(Number(calc.dri), 0, 100);
+  const bii = clamp(Number(calc.bii), 0, 100);
+  const cli = clamp(Number(calc.cli), 0, 100);
 
   return (
-    <div style={pageStyle}>
-      <header style={navStyle}>
-        <div style={navLeftStyle}>
-          <div
-            style={{
-              width: "42px",
-              height: "42px",
-              backgroundColor: "white",
-              borderRadius: "10px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              padding: "4px",
-            }}
-          >
-            <img
-              src="/magos_logo.png"
-              alt="MAGOS 로고"
-              style={{ width: "100%", height: "100%", objectFit: "contain" }}
-            />
-          </div>
-          <div style={logoTextStyle}>MAGOS</div>
+    (psi * wP + dri * wD + bii * wB + cli * wC) / totalWeight
+  );
+}
+
+function calculateExpertAdjustment(experts) {
+  const logs = [];
+  let score = 0;
+
+  experts.forEach((expert) => {
+    const meta = getJudgementMeta(expert.judgementType);
+    const confidence = clamp(Number(expert.confidence || 0), 0, 1.2);
+    const damping = clamp(Number(expert.damping || 0), 0, 1.2);
+
+    const contribution = meta.weight * confidence * damping;
+    score += contribution;
+
+    logs.push({
+      name: expert.name,
+      role: expert.role,
+      typeLabel: meta.label,
+      contribution,
+    });
+  });
+
+  return {
+    adjustmentScore: score,
+    logs,
+  };
+}
+
+function calculateFinalMRI(base, adjustment, calc) {
+  const kd = clamp(Number(calc.kd), 1.0, 1.2);
+  const ki = clamp(Number(calc.ki), 1.0, 1.15);
+  const correctionMode = calc.correctionMode;
+
+  let correctedByExpert = base;
+  if (correctionMode === "add") {
+    correctedByExpert = clamp(base + adjustment.adjustmentScore, 0, 100);
+  } else if (correctionMode === "blend") {
+    correctedByExpert = clamp(base + adjustment.adjustmentScore * 0.6, 0, 100);
+  } else {
+    correctedByExpert = base;
+  }
+
+  const finalScore = 100 - (100 - correctedByExpert) / (kd * ki);
+  return clamp(finalScore, 0, 100);
+}
+
+function buildSummary({ projectName, finalRisk, finalGrade, calc, expertResult }) {
+  const gradeLabel = getGradeLabel(finalGrade);
+
+  const topExpertLog = [...expertResult.logs].sort(
+    (a, b) => b.contribution - a.contribution
+  )[0];
+
+  const expertText = topExpertLog
+    ? `${topExpertLog.name}(${topExpertLog.role})의 '${topExpertLog.typeLabel}' 판단이 보정에 가장 크게 반영되었습니다.`
+    : "전문가 판단 보정은 반영되지 않았습니다.";
+
+  return `${projectName || "대상 구조물"}에 대한 예비 구조 리스크 평가 결과, 최종 MRI는 ${finalRisk.toFixed(
+    1
+  )}점으로 ${finalGrade}등급(${gradeLabel}) 수준으로 판단됩니다. 입력 지표는 PSI ${Number(
+    calc.psi
+  ).toFixed(1)}, DRI ${Number(calc.dri).toFixed(1)}, BII ${Number(
+    calc.bii
+  ).toFixed(1)}, CLI ${Number(calc.cli).toFixed(
+    1
+  )}이며, 데이터 신뢰도 보정계수 Kd ${Number(calc.kd).toFixed(
+    2
+  )} 및 구조 중요도 계수 Ki ${Number(calc.ki).toFixed(
+    2
+  )}가 적용되었습니다. ${expertText} 본 결과는 기술사 검토를 보조하는 예비 평가 결과이며, 대외 제출 시에는 근거자료와 기술사 책임 구조를 함께 검토하는 것이 바람직합니다.`;
+}
+
+function App() {
+  const [calc, setCalc] = useState({
+    psi: 62,
+    dri: 58,
+    bii: 54,
+    cli: 61,
+    wP: 0.35,
+    wD: 0.30,
+    wB: 0.20,
+    wC: 0.15,
+    kd: 1.08,
+    ki: 1.05,
+    correctionMode: "blend",
+  });
+
+  const [projectName, setProjectName] = useState("MAGOS Demo Project");
+
+  const [experts, setExperts] = useState(DEFAULT_EXPERTS);
+
+  const [contact, setContact] = useState({
+    name: "",
+    company: "",
+    email: "",
+    phone: "",
+    project: "",
+    message: "",
+  });
+
+  const [sending, setSending] = useState(false);
+  const [mailStatus, setMailStatus] = useState("");
+
+  const baseResult = useMemo(() => calculateBaseMRI(calc), [calc]);
+  const expertResult = useMemo(() => calculateExpertAdjustment(experts), [experts]);
+  const finalRisk = useMemo(
+    () => calculateFinalMRI(baseResult, expertResult, calc),
+    [baseResult, expertResult, calc]
+  );
+  const finalGrade = useMemo(() => getGrade(finalRisk), [finalRisk]);
+  const summaryText = useMemo(
+    () =>
+      buildSummary({
+        projectName,
+        finalRisk,
+        finalGrade,
+        calc,
+        expertResult,
+      }),
+    [projectName, finalRisk, finalGrade, calc, expertResult]
+  );
+
+  const updateCalc = (key, value) => {
+    setCalc((prev) => ({ ...prev, [key]: value }));
+  };
+
+  const updateExpert = (index, key, value) => {
+    setExperts((prev) =>
+      prev.map((item, i) => (i === index ? { ...item, [key]: value } : item))
+    );
+  };
+
+  const handlePrint = () => {
+    window.print();
+  };
+
+  const handleContactSubmit = async (e) => {
+    e.preventDefault();
+    setSending(true);
+    setMailStatus("");
+
+    await new Promise((resolve) => setTimeout(resolve, 900));
+
+    setSending(false);
+    setMailStatus(
+      "문의가 접수되었습니다. 실제 메일 연동 전 단계이며, 다음으로 EmailJS 또는 서버 연동을 붙이면 바로 실서비스로 연결할 수 있습니다."
+    );
+  };
+
+  const gradeColor = getGradeColor(finalGrade);
+
+  return (
+    <div style={styles.page}>
+      <header style={styles.header}>
+        <div style={styles.logoWrap} onClick={() => scrollToSection("home")}>
+          <div style={styles.logoBox}>△</div>
+          <div style={styles.logoText}>{BRAND.name}</div>
         </div>
 
-        <div style={navMenuStyle}>
-          <button style={getNavButtonStyle("home")} onClick={() => setActiveTab("home")}>
+        <nav style={styles.nav}>
+          <button style={styles.navBtnPrimary} onClick={() => scrollToSection("home")}>
             Home
           </button>
-          <button style={getNavButtonStyle("services")} onClick={() => setActiveTab("services")}>
+          <button style={styles.navBtn} onClick={() => scrollToSection("services")}>
             Services
           </button>
-          <button style={getNavButtonStyle("demo")} onClick={() => setActiveTab("demo")}>
+          <button style={styles.navBtn} onClick={() => scrollToSection("demo")}>
             Demo
           </button>
-          <button style={getNavButtonStyle("about")} onClick={() => setActiveTab("about")}>
+          <button style={styles.navBtn} onClick={() => scrollToSection("about")}>
             About
           </button>
-          <button style={getNavButtonStyle("contact")} onClick={() => setActiveTab("contact")}>
+          <button style={styles.navBtn} onClick={() => scrollToSection("contact")}>
             Contact
           </button>
-        </div>
+        </nav>
       </header>
 
-      {renderPage()}
+      <main style={styles.main}>
+        <section id="home" style={styles.heroSection}>
+          <div style={styles.heroLeft}>
+            <div style={styles.kicker}>{BRAND.subtitle}</div>
+            <h1 style={styles.heroTitle}>{BRAND.headline}</h1>
+            <p style={styles.heroDesc}>{BRAND.description}</p>
 
-      <footer style={footerStyle}>
-        MAGOS Structure Engineering Lab · Structural Risk & Engineering Decision
-      </footer>
+            <div style={styles.heroButtonRow}>
+              <button
+                style={styles.ctaGreen}
+                onClick={() => scrollToSection("demo")}
+              >
+                데모 보기
+              </button>
+              <button
+                style={styles.ctaBlue}
+                onClick={() => scrollToSection("services")}
+              >
+                서비스 보기
+              </button>
+            </div>
+
+            <div style={styles.heroMiniInfo}>
+              <div style={styles.heroMiniCard}>
+                <div style={styles.heroMiniLabel}>핵심 기능</div>
+                <div style={styles.heroMiniTitle}>MRI 기반 구조 리스크 정량평가</div>
+                <div style={styles.heroMiniText}>
+                  PSI, DRI, BII, CLI 기반 MRI 산정과 보정계수 적용을 통해 구조
+                  리스크를 수치와 등급으로 제시합니다.
+                </div>
+              </div>
+
+              <div style={styles.heroMiniCard}>
+                <div style={styles.heroMiniLabel}>활용 분야</div>
+                <div style={styles.heroMiniText}>
+                  보험 인수심사 / 구조 검토 / 유지관리 / 법원 감정 / 건설 포렌식 /
+                  공학 판단 기록
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div style={styles.heroRight}>
+            <div style={styles.scoreCard}>
+              <div style={styles.scoreHead}>
+                <div>
+                  <div style={styles.cardLabel}>LIVE PREVIEW</div>
+                  <div style={styles.cardTitle}>MAGOS MRI Preview</div>
+                </div>
+                <div
+                  style={{
+                    ...styles.gradeBadge,
+                    background: gradeColor,
+                    color: "#06133a",
+                  }}
+                >
+                  {finalGrade}
+                </div>
+              </div>
+
+              <div style={styles.bigScore}>{finalRisk.toFixed(1)}</div>
+              <div style={styles.bigScoreLabel}>
+                최종 MRI / {getGradeLabel(finalGrade)}
+              </div>
+
+              <div style={styles.metricGrid}>
+                <div style={styles.metricBox}>
+                  <span style={styles.metricName}>Base MRI</span>
+                  <strong>{baseResult.toFixed(1)}</strong>
+                </div>
+                <div style={styles.metricBox}>
+                  <span style={styles.metricName}>Expert Adj.</span>
+                  <strong>{expertResult.adjustmentScore.toFixed(1)}</strong>
+                </div>
+                <div style={styles.metricBox}>
+                  <span style={styles.metricName}>Kd</span>
+                  <strong>{Number(calc.kd).toFixed(2)}</strong>
+                </div>
+                <div style={styles.metricBox}>
+                  <span style={styles.metricName}>Ki</span>
+                  <strong>{Number(calc.ki).toFixed(2)}</strong>
+                </div>
+              </div>
+
+              <div style={styles.previewText}>{summaryText}</div>
+            </div>
+          </div>
+        </section>
+
+        <section id="services" style={styles.section}>
+          <h2 style={styles.sectionTitle}>왜 MAGOS인가</h2>
+          <p style={styles.sectionDesc}>
+            경험 중심 판단에 의존하던 구조 검토를, 정량화된 리스크 점수와 문서화된
+            인증 구조로 연결합니다.
+          </p>
+
+          <div style={styles.cardGrid}>
+            {SERVICES.map((item) => (
+              <div key={item.title} style={styles.infoCard}>
+                <div style={styles.infoCardTitle}>{item.title}</div>
+                <div style={styles.infoCardDesc}>{item.desc}</div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section id="demo" style={styles.section}>
+          <h2 style={styles.sectionTitle}>MRI Demo</h2>
+          <p style={styles.sectionDesc}>
+            입력 → 계산 → 전문가 판단 보정 → 결과 요약 → 인쇄/PDF 저장까지 한 번에
+            확인할 수 있습니다.
+          </p>
+
+          <div style={styles.demoGrid}>
+            <div style={styles.panel}>
+              <div style={styles.panelTitle}>입력 정보</div>
+
+              <label style={styles.label}>프로젝트명</label>
+              <input
+                style={styles.input}
+                value={projectName}
+                onChange={(e) => setProjectName(e.target.value)}
+                placeholder="예: 교량 상부구조 예비평가"
+              />
+
+              <div style={styles.twoCol}>
+                <div>
+                  <label style={styles.label}>PSI</label>
+                  <input
+                    style={styles.input}
+                    type="number"
+                    min="0"
+                    max="100"
+                    value={calc.psi}
+                    onChange={(e) => updateCalc("psi", e.target.value)}
+                  />
+                </div>
+                <div>
+                  <label style={styles.label}>DRI</label>
+                  <input
+                    style={styles.input}
+                    type="number"
+                    min="0"
+                    max="100"
+                    value={calc.dri}
+                    onChange={(e) => updateCalc("dri", e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div style={styles.twoCol}>
+                <div>
+                  <label style={styles.label}>BII</label>
+                  <input
+                    style={styles.input}
+                    type="number"
+                    min="0"
+                    max="100"
+                    value={calc.bii}
+                    onChange={(e) => updateCalc("bii", e.target.value)}
+                  />
+                </div>
+                <div>
+                  <label style={styles.label}>CLI</label>
+                  <input
+                    style={styles.input}
+                    type="number"
+                    min="0"
+                    max="100"
+                    value={calc.cli}
+                    onChange={(e) => updateCalc("cli", e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div style={styles.subSectionTitle}>가중치 설정</div>
+              <div style={styles.twoCol}>
+                <div>
+                  <label style={styles.label}>wP</label>
+                  <input
+                    style={styles.input}
+                    type="number"
+                    step="0.01"
+                    value={calc.wP}
+                    onChange={(e) => updateCalc("wP", e.target.value)}
+                  />
+                </div>
+                <div>
+                  <label style={styles.label}>wD</label>
+                  <input
+                    style={styles.input}
+                    type="number"
+                    step="0.01"
+                    value={calc.wD}
+                    onChange={(e) => updateCalc("wD", e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div style={styles.twoCol}>
+                <div>
+                  <label style={styles.label}>wB</label>
+                  <input
+                    style={styles.input}
+                    type="number"
+                    step="0.01"
+                    value={calc.wB}
+                    onChange={(e) => updateCalc("wB", e.target.value)}
+                  />
+                </div>
+                <div>
+                  <label style={styles.label}>wC</label>
+                  <input
+                    style={styles.input}
+                    type="number"
+                    step="0.01"
+                    value={calc.wC}
+                    onChange={(e) => updateCalc("wC", e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div style={styles.subSectionTitle}>보정계수</div>
+              <div style={styles.twoCol}>
+                <div>
+                  <label style={styles.label}>Kd (데이터 신뢰도)</label>
+                  <input
+                    style={styles.input}
+                    type="number"
+                    step="0.01"
+                    min="1"
+                    max="1.2"
+                    value={calc.kd}
+                    onChange={(e) => updateCalc("kd", e.target.value)}
+                  />
+                </div>
+                <div>
+                  <label style={styles.label}>Ki (구조 중요도)</label>
+                  <input
+                    style={styles.input}
+                    type="number"
+                    step="0.01"
+                    min="1"
+                    max="1.15"
+                    value={calc.ki}
+                    onChange={(e) => updateCalc("ki", e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <label style={styles.label}>전문가 보정 방식</label>
+              <select
+                style={styles.select}
+                value={calc.correctionMode}
+                onChange={(e) => updateCalc("correctionMode", e.target.value)}
+              >
+                <option value="blend">Blend (권장)</option>
+                <option value="add">Add</option>
+                <option value="none">None</option>
+              </select>
+            </div>
+
+            <div style={styles.panel}>
+              <div style={styles.panelTitle}>전문가 판단 보정</div>
+
+              {experts.map((expert, index) => (
+                <div key={index} style={styles.expertCard}>
+                  <div style={styles.expertHeader}>{expert.name}</div>
+
+                  <div style={styles.twoCol}>
+                    <div>
+                      <label style={styles.label}>역할</label>
+                      <select
+                        style={styles.select}
+                        value={expert.role}
+                        onChange={(e) =>
+                          updateExpert(index, "role", e.target.value)
+                        }
+                      >
+                        <option value="lead">lead</option>
+                        <option value="field">field</option>
+                        <option value="assistant">assistant</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label style={styles.label}>판단유형</label>
+                      <select
+                        style={styles.select}
+                        value={expert.judgementType}
+                        onChange={(e) =>
+                          updateExpert(index, "judgementType", e.target.value)
+                        }
+                      >
+                        <option value="normal">normal</option>
+                        <option value="investigate">investigate</option>
+                        <option value="conditional">conditional</option>
+                        <option value="critical">critical</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div style={styles.twoCol}>
+                    <div>
+                      <label style={styles.label}>confidence</label>
+                      <input
+                        style={styles.input}
+                        type="number"
+                        step="0.1"
+                        value={expert.confidence}
+                        onChange={(e) =>
+                          updateExpert(index, "confidence", e.target.value)
+                        }
+                      />
+                    </div>
+                    <div>
+                      <label style={styles.label}>damping</label>
+                      <input
+                        style={styles.input}
+                        type="number"
+                        step="0.1"
+                        value={expert.damping}
+                        onChange={(e) =>
+                          updateExpert(index, "damping", e.target.value)
+                        }
+                      />
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div style={styles.resultWrap}>
+            <div style={styles.resultLeft}>
+              <div style={styles.resultCard}>
+                <div style={styles.resultHeader}>
+                  <div>
+                    <div style={styles.cardLabel}>EVALUATION RESULT</div>
+                    <div style={styles.cardTitle}>{projectName || "Unnamed Project"}</div>
+                  </div>
+                  <div
+                    style={{
+                      ...styles.resultGrade,
+                      background: gradeColor,
+                      color: "#06133a",
+                    }}
+                  >
+                    {finalGrade} / {getGradeLabel(finalGrade)}
+                  </div>
+                </div>
+
+                <div style={styles.resultScore}>{finalRisk.toFixed(1)}</div>
+                <div style={styles.resultScoreSub}>최종 MRI 점수</div>
+
+                <div style={styles.resultMetrics}>
+                  <div style={styles.resultMetricItem}>
+                    <span>Base MRI</span>
+                    <strong>{baseResult.toFixed(1)}</strong>
+                  </div>
+                  <div style={styles.resultMetricItem}>
+                    <span>Expert Adjustment</span>
+                    <strong>{expertResult.adjustmentScore.toFixed(1)}</strong>
+                  </div>
+                  <div style={styles.resultMetricItem}>
+                    <span>Kd × Ki</span>
+                    <strong>
+                      {(Number(calc.kd) * Number(calc.ki)).toFixed(3)}
+                    </strong>
+                  </div>
+                </div>
+
+                <div style={styles.summaryBox}>
+                  <div style={styles.summaryTitle}>자동 요약</div>
+                  <div style={styles.summaryText}>{summaryText}</div>
+                </div>
+
+                <div style={styles.buttonRow}>
+                  <button style={styles.ctaBlue} onClick={handlePrint}>
+                    인쇄 / PDF 저장
+                  </button>
+                  <button
+                    style={styles.ctaGreen}
+                    onClick={() => scrollToSection("contact")}
+                  >
+                    상담 문의
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div style={styles.resultRight}>
+              <div style={styles.sideCard}>
+                <div style={styles.sideCardTitle}>전문가 판단 로그</div>
+                {expertResult.logs.map((log, idx) => (
+                  <div key={idx} style={styles.logItem}>
+                    <div style={styles.logTitle}>
+                      {log.name} / {log.role}
+                    </div>
+                    <div style={styles.logText}>
+                      {log.typeLabel} · 보정기여 {log.contribution.toFixed(1)}
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div style={styles.sideCard}>
+                <div style={styles.sideCardTitle}>실무 활용 포인트</div>
+                <ul style={styles.bulletList}>
+                  <li>초기 구조안전 검토 자료</li>
+                  <li>보험 인수심사 보조자료</li>
+                  <li>유지관리 우선순위 판단</li>
+                  <li>기술사 판단 기록 초안</li>
+                  <li>법원 감정/포렌식 설명자료</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="about" style={styles.section}>
+          <h2 style={styles.sectionTitle}>About MAGOS</h2>
+          <p style={styles.sectionDesc}>
+            MAGOS는 구조 리스크를 수치화하고, 기술사 판단을 문서화하며, 최종적으로
+            의사결정과 인증 구조로 연결하는 실무형 엔지니어링 플랫폼을 목표로 합니다.
+          </p>
+
+          <div style={styles.aboutGrid}>
+            <div style={styles.aboutCard}>
+              <div style={styles.aboutTitle}>정량화</div>
+              <div style={styles.aboutText}>
+                구조 리스크를 점수와 등급으로 제시하여 의사결정의 객관성을 높입니다.
+              </div>
+            </div>
+            <div style={styles.aboutCard}>
+              <div style={styles.aboutTitle}>기술사 판단</div>
+              <div style={styles.aboutText}>
+                구조기술사의 검토 경험과 공학 판단을 문서화 가능한 형태로 정리합니다.
+              </div>
+            </div>
+            <div style={styles.aboutCard}>
+              <div style={styles.aboutTitle}>인증서 발행</div>
+              <div style={styles.aboutText}>
+                PDF 인증서 형태로 결과를 정리하여 실무 제출 문서로 활용할 수 있습니다.
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="contact" style={styles.section}>
+          <h2 style={styles.sectionTitle}>Contact</h2>
+          <p style={styles.sectionDesc}>
+            프로젝트 개요를 남겨주시면 MAGOS가 적용 가능성과 예상 산출물 범위를
+            검토해드립니다.
+          </p>
+
+          <div style={styles.contactWrap}>
+            <form style={styles.contactForm} onSubmit={handleContactSubmit}>
+              <div style={styles.twoCol}>
+                <div>
+                  <label style={styles.label}>이름</label>
+                  <input
+                    style={styles.input}
+                    value={contact.name}
+                    onChange={(e) =>
+                      setContact((prev) => ({ ...prev, name: e.target.value }))
+                    }
+                    placeholder="홍길동"
+                  />
+                </div>
+                <div>
+                  <label style={styles.label}>회사명</label>
+                  <input
+                    style={styles.input}
+                    value={contact.company}
+                    onChange={(e) =>
+                      setContact((prev) => ({ ...prev, company: e.target.value }))
+                    }
+                    placeholder="MAGOS / 발주처 / 보험사"
+                  />
+                </div>
+              </div>
+
+              <div style={styles.twoCol}>
+                <div>
+                  <label style={styles.label}>이메일</label>
+                  <input
+                    style={styles.input}
+                    value={contact.email}
+                    onChange={(e) =>
+                      setContact((prev) => ({ ...prev, email: e.target.value }))
+                    }
+                    placeholder="example@email.com"
+                  />
+                </div>
+                <div>
+                  <label style={styles.label}>연락처</label>
+                  <input
+                    style={styles.input}
+                    value={contact.phone}
+                    onChange={(e) =>
+                      setContact((prev) => ({ ...prev, phone: e.target.value }))
+                    }
+                    placeholder="010-0000-0000"
+                  />
+                </div>
+              </div>
+
+              <label style={styles.label}>프로젝트명</label>
+              <input
+                style={styles.input}
+                value={contact.project}
+                onChange={(e) =>
+                  setContact((prev) => ({ ...prev, project: e.target.value }))
+                }
+                placeholder="예: 교량 보수보강 사전 검토"
+              />
+
+              <label style={styles.label}>문의 내용</label>
+              <textarea
+                style={styles.textarea}
+                rows={6}
+                value={contact.message}
+                onChange={(e) =>
+                  setContact((prev) => ({ ...prev, message: e.target.value }))
+                }
+                placeholder="검토 대상, 필요 산출물, 일정 등을 입력해 주세요."
+              />
+
+              <div style={styles.buttonRow}>
+                <button type="submit" style={styles.ctaBlue} disabled={sending}>
+                  {sending ? "접수 중..." : "문의 접수"}
+                </button>
+              </div>
+
+              {mailStatus ? <div style={styles.statusBox}>{mailStatus}</div> : null}
+            </form>
+
+            <div style={styles.contactSide}>
+              <div style={styles.sideCard}>
+                <div style={styles.sideCardTitle}>제공 가능 산출물</div>
+                <ul style={styles.bulletList}>
+                  <li>MRI 예비 평가표</li>
+                  <li>구조 리스크 요약 보고서</li>
+                  <li>기술사 판단 기록 초안</li>
+                  <li>PDF 인증서</li>
+                  <li>보험/법원/유지관리용 설명자료</li>
+                </ul>
+              </div>
+
+              <div style={styles.sideCard}>
+                <div style={styles.sideCardTitle}>서비스 전환 다음 단계</div>
+                <ul style={styles.bulletList}>
+                  <li>이메일 전송 연동</li>
+                  <li>PDF 자동 생성</li>
+                  <li>관리자 저장 기능</li>
+                  <li>DB 연동 및 고객 관리</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
     </div>
   );
 }
+
+const styles = {
+  page: {
+    minHeight: "100vh",
+    background:
+      "linear-gradient(180deg, #02113f 0%, #01103a 45%, #020c2d 100%)",
+    color: "#f5f7ff",
+    fontFamily:
+      '"Pretendard","Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif',
+  },
+  header: {
+    position: "sticky",
+    top: 0,
+    zIndex: 20,
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: "14px 22px",
+    borderBottom: "1px solid rgba(255,255,255,0.12)",
+    background: "rgba(2, 10, 45, 0.92)",
+    backdropFilter: "blur(10px)",
+  },
+  logoWrap: {
+    display: "flex",
+    alignItems: "center",
+    gap: 14,
+    cursor: "pointer",
+  },
+  logoBox: {
+    width: 36,
+    height: 36,
+    borderRadius: 10,
+    background: "#ffffff",
+    color: "#02113f",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    fontWeight: 900,
+    fontSize: 18,
+  },
+  logoText: {
+    fontSize: 22,
+    fontWeight: 800,
+    letterSpacing: -0.5,
+  },
+  nav: {
+    display: "flex",
+    gap: 10,
+    flexWrap: "wrap",
+  },
+  navBtn: {
+    background: "transparent",
+    border: "1px solid rgba(255,255,255,0.18)",
+    color: "#ffffff",
+    padding: "12px 18px",
+    borderRadius: 12,
+    cursor: "pointer",
+    fontWeight: 700,
+    fontSize: 16,
+  },
+  navBtnPrimary: {
+    background: "#3f6fda",
+    border: "1px solid rgba(255,255,255,0.12)",
+    color: "#ffffff",
+    padding: "12px 18px",
+    borderRadius: 12,
+    cursor: "pointer",
+    fontWeight: 700,
+    fontSize: 16,
+  },
+  main: {
+    maxWidth: 1220,
+    margin: "0 auto",
+    padding: "34px 22px 80px",
+  },
+  heroSection: {
+    display: "grid",
+    gridTemplateColumns: "1.2fr 0.8fr",
+    gap: 26,
+    alignItems: "stretch",
+  },
+  heroLeft: {
+    background: "rgba(17, 34, 103, 0.88)",
+    borderRadius: 28,
+    padding: 36,
+    boxShadow: "0 18px 50px rgba(0,0,0,0.22)",
+  },
+  kicker: {
+    fontSize: 14,
+    fontWeight: 800,
+    color: "#c9d5ff",
+    marginBottom: 18,
+  },
+  heroTitle: {
+    fontSize: 68,
+    lineHeight: 1.02,
+    margin: "0 0 24px",
+    letterSpacing: -2.2,
+    fontWeight: 900,
+  },
+  heroDesc: {
+    fontSize: 17,
+    lineHeight: 1.8,
+    color: "#e5ebff",
+    marginBottom: 28,
+    maxWidth: 760,
+  },
+  heroButtonRow: {
+    display: "flex",
+    gap: 12,
+    flexWrap: "wrap",
+    marginBottom: 28,
+  },
+  ctaGreen: {
+    background: "#8bcf69",
+    color: "#08204e",
+    border: "none",
+    padding: "16px 24px",
+    borderRadius: 14,
+    fontWeight: 800,
+    fontSize: 18,
+    cursor: "pointer",
+  },
+  ctaBlue: {
+    background: "#7ea9f2",
+    color: "#08204e",
+    border: "none",
+    padding: "16px 24px",
+    borderRadius: 14,
+    fontWeight: 800,
+    fontSize: 18,
+    cursor: "pointer",
+  },
+  heroMiniInfo: {
+    display: "grid",
+    gridTemplateColumns: "1fr",
+    gap: 16,
+  },
+  heroMiniCard: {
+    background: "rgba(18, 31, 100, 0.9)",
+    borderRadius: 22,
+    padding: 24,
+    border: "1px solid rgba(255,255,255,0.08)",
+  },
+  heroMiniLabel: {
+    fontSize: 14,
+    color: "#bfd0ff",
+    marginBottom: 10,
+    fontWeight: 700,
+  },
+  heroMiniTitle: {
+    fontSize: 21,
+    fontWeight: 800,
+    marginBottom: 12,
+  },
+  heroMiniText: {
+    fontSize: 16,
+    lineHeight: 1.75,
+    color: "#e6ecff",
+  },
+  heroRight: {
+    display: "flex",
+  },
+  scoreCard: {
+    width: "100%",
+    background: "rgba(18, 31, 100, 0.9)",
+    borderRadius: 28,
+    padding: 28,
+    border: "1px solid rgba(255,255,255,0.08)",
+    boxShadow: "0 16px 40px rgba(0,0,0,0.18)",
+  },
+  scoreHead: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    gap: 12,
+    marginBottom: 18,
+  },
+  cardLabel: {
+    fontSize: 12,
+    color: "#b8c8ff",
+    fontWeight: 800,
+    letterSpacing: 1,
+  },
+  cardTitle: {
+    fontSize: 22,
+    fontWeight: 800,
+    marginTop: 6,
+  },
+  gradeBadge: {
+    minWidth: 58,
+    height: 58,
+    borderRadius: 16,
+    fontWeight: 900,
+    fontSize: 28,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  bigScore: {
+    fontSize: 72,
+    fontWeight: 900,
+    lineHeight: 1,
+    marginTop: 8,
+  },
+  bigScoreLabel: {
+    marginTop: 10,
+    fontSize: 18,
+    color: "#d7e2ff",
+    marginBottom: 22,
+  },
+  metricGrid: {
+    display: "grid",
+    gridTemplateColumns: "1fr 1fr",
+    gap: 12,
+    marginBottom: 20,
+  },
+  metricBox: {
+    background: "rgba(255,255,255,0.05)",
+    borderRadius: 16,
+    padding: 16,
+    display: "flex",
+    flexDirection: "column",
+    gap: 8,
+  },
+  metricName: {
+    color: "#bcd0ff",
+    fontSize: 13,
+  },
+  previewText: {
+    fontSize: 15,
+    lineHeight: 1.75,
+    color: "#edf2ff",
+    background: "rgba(255,255,255,0.04)",
+    borderRadius: 16,
+    padding: 18,
+  },
+  section: {
+    marginTop: 64,
+  },
+  sectionTitle: {
+    fontSize: 42,
+    margin: "0 0 14px",
+    fontWeight: 900,
+    letterSpacing: -1.2,
+  },
+  sectionDesc: {
+    fontSize: 18,
+    lineHeight: 1.75,
+    color: "#e0e9ff",
+    marginBottom: 24,
+  },
+  cardGrid: {
+    display: "grid",
+    gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
+    gap: 18,
+  },
+  infoCard: {
+    background: "rgba(16, 27, 88, 0.88)",
+    borderRadius: 22,
+    padding: 24,
+    border: "1px solid rgba(255,255,255,0.07)",
+    minHeight: 180,
+  },
+  infoCardTitle: {
+    fontSize: 22,
+    fontWeight: 800,
+    marginBottom: 14,
+  },
+  infoCardDesc: {
+    fontSize: 17,
+    lineHeight: 1.75,
+    color: "#e6ecff",
+  },
+  demoGrid: {
+    display: "grid",
+    gridTemplateColumns: "1fr 1fr",
+    gap: 18,
+  },
+  panel: {
+    background: "rgba(16, 27, 88, 0.88)",
+    borderRadius: 24,
+    padding: 24,
+    border: "1px solid rgba(255,255,255,0.07)",
+  },
+  panelTitle: {
+    fontSize: 24,
+    fontWeight: 800,
+    marginBottom: 20,
+  },
+  label: {
+    display: "block",
+    fontSize: 14,
+    color: "#c6d5ff",
+    marginBottom: 8,
+    fontWeight: 700,
+  },
+  input: {
+    width: "100%",
+    boxSizing: "border-box",
+    padding: "14px 14px",
+    borderRadius: 14,
+    border: "1px solid rgba(255,255,255,0.12)",
+    background: "rgba(255,255,255,0.06)",
+    color: "#ffffff",
+    fontSize: 16,
+    marginBottom: 16,
+    outline: "none",
+  },
+  select: {
+    width: "100%",
+    boxSizing: "border-box",
+    padding: "14px 14px",
+    borderRadius: 14,
+    border: "1px solid rgba(255,255,255,0.12)",
+    background: "rgba(255,255,255,0.06)",
+    color: "#ffffff",
+    fontSize: 16,
+    marginBottom: 16,
+    outline: "none",
+  },
+  textarea: {
+    width: "100%",
+    boxSizing: "border-box",
+    padding: "14px 14px",
+    borderRadius: 14,
+    border: "1px solid rgba(255,255,255,0.12)",
+    background: "rgba(255,255,255,0.06)",
+    color: "#ffffff",
+    fontSize: 16,
+    marginBottom: 16,
+    outline: "none",
+    resize: "vertical",
+  },
+  twoCol: {
+    display: "grid",
+    gridTemplateColumns: "1fr 1fr",
+    gap: 14,
+  },
+  subSectionTitle: {
+    fontSize: 18,
+    fontWeight: 800,
+    margin: "6px 0 12px",
+    color: "#f2f5ff",
+  },
+  expertCard: {
+    background: "rgba(255,255,255,0.04)",
+    borderRadius: 18,
+    padding: 16,
+    marginBottom: 16,
+  },
+  expertHeader: {
+    fontSize: 18,
+    fontWeight: 800,
+    marginBottom: 12,
+  },
+  resultWrap: {
+    marginTop: 20,
+    display: "grid",
+    gridTemplateColumns: "1.2fr 0.8fr",
+    gap: 18,
+  },
+  resultLeft: {
+    display: "flex",
+  },
+  resultRight: {
+    display: "grid",
+    gap: 18,
+  },
+  resultCard: {
+    width: "100%",
+    background: "rgba(16, 27, 88, 0.88)",
+    borderRadius: 24,
+    padding: 26,
+    border: "1px solid rgba(255,255,255,0.07)",
+  },
+  resultHeader: {
+    display: "flex",
+    justifyContent: "space-between",
+    gap: 12,
+    alignItems: "center",
+    marginBottom: 16,
+  },
+  resultGrade: {
+    padding: "12px 16px",
+    borderRadius: 14,
+    fontWeight: 900,
+    fontSize: 18,
+  },
+  resultScore: {
+    fontSize: 86,
+    fontWeight: 900,
+    lineHeight: 1,
+  },
+  resultScoreSub: {
+    marginTop: 10,
+    fontSize: 18,
+    color: "#dbe6ff",
+    marginBottom: 18,
+  },
+  resultMetrics: {
+    display: "grid",
+    gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
+    gap: 12,
+    marginBottom: 18,
+  },
+  resultMetricItem: {
+    background: "rgba(255,255,255,0.05)",
+    borderRadius: 16,
+    padding: 16,
+    display: "flex",
+    flexDirection: "column",
+    gap: 8,
+  },
+  summaryBox: {
+    background: "rgba(255,255,255,0.04)",
+    borderRadius: 18,
+    padding: 20,
+    marginBottom: 18,
+  },
+  summaryTitle: {
+    fontSize: 18,
+    fontWeight: 800,
+    marginBottom: 10,
+  },
+  summaryText: {
+    fontSize: 16,
+    lineHeight: 1.8,
+    color: "#eef3ff",
+  },
+  buttonRow: {
+    display: "flex",
+    gap: 12,
+    flexWrap: "wrap",
+  },
+  sideCard: {
+    background: "rgba(16, 27, 88, 0.88)",
+    borderRadius: 24,
+    padding: 22,
+    border: "1px solid rgba(255,255,255,0.07)",
+  },
+  sideCardTitle: {
+    fontSize: 22,
+    fontWeight: 800,
+    marginBottom: 14,
+  },
+  logItem: {
+    padding: "12px 0",
+    borderBottom: "1px solid rgba(255,255,255,0.08)",
+  },
+  logTitle: {
+    fontSize: 16,
+    fontWeight: 700,
+    marginBottom: 6,
+  },
+  logText: {
+    fontSize: 15,
+    color: "#d8e5ff",
+  },
+  bulletList: {
+    margin: 0,
+    paddingLeft: 20,
+    color: "#edf3ff",
+    lineHeight: 1.9,
+    fontSize: 16,
+  },
+  aboutGrid: {
+    display: "grid",
+    gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
+    gap: 18,
+  },
+  aboutCard: {
+    background: "rgba(16, 27, 88, 0.88)",
+    borderRadius: 24,
+    padding: 24,
+    border: "1px solid rgba(255,255,255,0.07)",
+  },
+  aboutTitle: {
+    fontSize: 22,
+    fontWeight: 800,
+    marginBottom: 12,
+  },
+  aboutText: {
+    fontSize: 17,
+    lineHeight: 1.75,
+    color: "#e7eeff",
+  },
+  contactWrap: {
+    display: "grid",
+    gridTemplateColumns: "1.1fr 0.9fr",
+    gap: 18,
+  },
+  contactForm: {
+    background: "rgba(16, 27, 88, 0.88)",
+    borderRadius: 24,
+    padding: 24,
+    border: "1px solid rgba(255,255,255,0.07)",
+  },
+  contactSide: {
+    display: "grid",
+    gap: 18,
+  },
+  statusBox: {
+    marginTop: 8,
+    background: "rgba(139, 207, 105, 0.15)",
+    color: "#dff5d2",
+    border: "1px solid rgba(139, 207, 105, 0.35)",
+    borderRadius: 14,
+    padding: 14,
+    lineHeight: 1.6,
+  },
+};
+
+export default App;
