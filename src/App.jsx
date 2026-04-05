@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import emailjs from "@emailjs/browser";
 
 const BRAND = {
   name: "MAGOS",
@@ -135,9 +136,7 @@ function calculateBaseMRI(calc) {
   const bii = clamp(Number(calc.bii), 0, 100);
   const cli = clamp(Number(calc.cli), 0, 100);
 
-  return (
-    (psi * wP + dri * wD + bii * wB + cli * wC) / totalWeight
-  );
+  return (psi * wP + dri * wD + bii * wB + cli * wC) / totalWeight;
 }
 
 function calculateExpertAdjustment(experts) {
@@ -176,8 +175,6 @@ function calculateFinalMRI(base, adjustment, calc) {
     correctedByExpert = clamp(base + adjustment.adjustmentScore, 0, 100);
   } else if (correctionMode === "blend") {
     correctedByExpert = clamp(base + adjustment.adjustmentScore * 0.6, 0, 100);
-  } else {
-    correctedByExpert = base;
   }
 
   const finalScore = 100 - (100 - correctedByExpert) / (kd * ki);
@@ -210,15 +207,15 @@ function buildSummary({ projectName, finalRisk, finalGrade, calc, expertResult }
   )}가 적용되었습니다. ${expertText} 본 결과는 기술사 검토를 보조하는 예비 평가 결과이며, 대외 제출 시에는 근거자료와 기술사 책임 구조를 함께 검토하는 것이 바람직합니다.`;
 }
 
-function App() {
+export default function App() {
   const [calc, setCalc] = useState({
     psi: 62,
     dri: 58,
     bii: 54,
     cli: 61,
     wP: 0.35,
-    wD: 0.30,
-    wB: 0.20,
+    wD: 0.3,
+    wB: 0.2,
     wC: 0.15,
     kd: 1.08,
     ki: 1.05,
@@ -226,7 +223,6 @@ function App() {
   });
 
   const [projectName, setProjectName] = useState("MAGOS Demo Project");
-
   const [experts, setExperts] = useState(DEFAULT_EXPERTS);
 
   const [contact, setContact] = useState({
@@ -248,6 +244,7 @@ function App() {
     [baseResult, expertResult, calc]
   );
   const finalGrade = useMemo(() => getGrade(finalRisk), [finalRisk]);
+
   const summaryText = useMemo(
     () =>
       buildSummary({
@@ -276,15 +273,69 @@ function App() {
 
   const handleContactSubmit = async (e) => {
     e.preventDefault();
-    setSending(true);
     setMailStatus("");
 
-    await new Promise((resolve) => setTimeout(resolve, 900));
+    const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID;
+    const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
+    const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
+    const toEmail =
+      import.meta.env.VITE_CONTACT_TO_EMAIL || "ceo@magos.ai.kr";
 
-    setSending(false);
-    setMailStatus(
-      "문의가 접수되었습니다. 실제 메일 연동 전 단계이며, 다음으로 EmailJS 또는 서버 연동을 붙이면 바로 실서비스로 연결할 수 있습니다."
-    );
+    if (!serviceId || !templateId || !publicKey) {
+      setMailStatus(
+        "환경변수 설정이 누락되었습니다. .env 파일의 VITE_EMAILJS_SERVICE_ID, VITE_EMAILJS_TEMPLATE_ID, VITE_EMAILJS_PUBLIC_KEY를 확인해 주세요."
+      );
+      return;
+    }
+
+    if (!contact.name || !contact.email || !contact.message) {
+      setMailStatus("이름, 이메일, 문의 내용은 필수입니다.");
+      return;
+    }
+
+    setSending(true);
+
+    try {
+      await emailjs.send(
+        serviceId,
+        templateId,
+        {
+          from_name: contact.name,
+          company: contact.company || "-",
+          reply_to: contact.email,
+          phone: contact.phone || "-",
+          project_name: contact.project || projectName || "-",
+          message: contact.message,
+          to_email: toEmail,
+          mri_score: finalRisk.toFixed(1),
+          mri_grade: `${finalGrade} / ${getGradeLabel(finalGrade)}`,
+          summary_text: summaryText,
+        },
+        {
+          publicKey,
+        }
+      );
+
+      setMailStatus(
+        `문의가 정상 접수되었습니다. ${toEmail} 로 전송되었습니다.`
+      );
+
+      setContact({
+        name: "",
+        company: "",
+        email: "",
+        phone: "",
+        project: "",
+        message: "",
+      });
+    } catch (error) {
+      console.error("EmailJS send error:", error);
+      setMailStatus(
+        "메일 전송에 실패했습니다. Service ID, Template ID, Public Key, 템플릿 변수명을 다시 확인해 주세요."
+      );
+    } finally {
+      setSending(false);
+    }
   };
 
   const gradeColor = getGradeColor(finalGrade);
@@ -324,16 +375,10 @@ function App() {
             <p style={styles.heroDesc}>{BRAND.description}</p>
 
             <div style={styles.heroButtonRow}>
-              <button
-                style={styles.ctaGreen}
-                onClick={() => scrollToSection("demo")}
-              >
+              <button style={styles.ctaGreen} onClick={() => scrollToSection("demo")}>
                 데모 보기
               </button>
-              <button
-                style={styles.ctaBlue}
-                onClick={() => scrollToSection("services")}
-              >
+              <button style={styles.ctaBlue} onClick={() => scrollToSection("services")}>
                 서비스 보기
               </button>
             </div>
@@ -591,9 +636,7 @@ function App() {
                       <select
                         style={styles.select}
                         value={expert.role}
-                        onChange={(e) =>
-                          updateExpert(index, "role", e.target.value)
-                        }
+                        onChange={(e) => updateExpert(index, "role", e.target.value)}
                       >
                         <option value="lead">lead</option>
                         <option value="field">field</option>
@@ -697,10 +740,7 @@ function App() {
                   <button style={styles.ctaBlue} onClick={handlePrint}>
                     인쇄 / PDF 저장
                   </button>
-                  <button
-                    style={styles.ctaGreen}
-                    onClick={() => scrollToSection("contact")}
-                  >
+                  <button style={styles.ctaGreen} onClick={() => scrollToSection("contact")}>
                     상담 문의
                   </button>
                 </div>
@@ -776,7 +816,7 @@ function App() {
             <form style={styles.contactForm} onSubmit={handleContactSubmit}>
               <div style={styles.twoCol}>
                 <div>
-                  <label style={styles.label}>이름</label>
+                  <label style={styles.label}>이름 *</label>
                   <input
                     style={styles.input}
                     value={contact.name}
@@ -801,9 +841,10 @@ function App() {
 
               <div style={styles.twoCol}>
                 <div>
-                  <label style={styles.label}>이메일</label>
+                  <label style={styles.label}>이메일 *</label>
                   <input
                     style={styles.input}
+                    type="email"
                     value={contact.email}
                     onChange={(e) =>
                       setContact((prev) => ({ ...prev, email: e.target.value }))
@@ -834,7 +875,7 @@ function App() {
                 placeholder="예: 교량 보수보강 사전 검토"
               />
 
-              <label style={styles.label}>문의 내용</label>
+              <label style={styles.label}>문의 내용 *</label>
               <textarea
                 style={styles.textarea}
                 rows={6}
@@ -847,7 +888,7 @@ function App() {
 
               <div style={styles.buttonRow}>
                 <button type="submit" style={styles.ctaBlue} disabled={sending}>
-                  {sending ? "접수 중..." : "문의 접수"}
+                  {sending ? "전송 중..." : "문의 접수"}
                 </button>
               </div>
 
@@ -867,13 +908,10 @@ function App() {
               </div>
 
               <div style={styles.sideCard}>
-                <div style={styles.sideCardTitle}>서비스 전환 다음 단계</div>
-                <ul style={styles.bulletList}>
-                  <li>이메일 전송 연동</li>
-                  <li>PDF 자동 생성</li>
-                  <li>관리자 저장 기능</li>
-                  <li>DB 연동 및 고객 관리</li>
-                </ul>
+                <div style={styles.sideCardTitle}>현재 문의 수신 주소</div>
+                <div style={styles.aboutText}>
+                  {import.meta.env.VITE_CONTACT_TO_EMAIL || "ceo@magos.ai.kr"}
+                </div>
               </div>
             </div>
           </div>
@@ -1394,5 +1432,3 @@ const styles = {
     lineHeight: 1.6,
   },
 };
-
-export default App;
