@@ -9,7 +9,7 @@ npm run dev
 ## 환경변수
 `.env`
 ```bash
-VITE_LITE_URL=https://mri.magos.co.kr
+VITE_LITE_URL=https://magos.ai.kr
 ```
 
 ## Streamlit 연결 방식
