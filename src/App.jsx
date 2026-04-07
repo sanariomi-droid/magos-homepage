@@ -645,15 +645,28 @@ export default function App() {
       <footer className="site-footer official-footer">
         <div className="site-footer-inner official-footer-inner">
           <div className="footer-office">
-            <strong>마고스 구조기술사사무소</strong>
-            <span>MAGOS Structure Engineering Lab</span>
+            <strong>MAGOS</strong>
+            <span>마고스 유한회사 · 마고스 구조기술사사무소</span>
+
+            <p className="footer-section-title">[Platform Company]</p>
+            <p>마고스 유한회사 (MAGOS Co., Ltd.)</p>
+            <p>AI 기반 구조안전 리스크 플랫폼 · 데이터 · SaaS</p>
+
+            <p className="footer-section-title">[Engineering Office]</p>
+            <p>마고스 구조기술사사무소 (MAGOS Structure Engineering Lab)</p>
             <p>대표: 김황준 (공학박사, 토목구조기술사)</p>
-            <p>구조안전 리스크 평가 · 구조기술사 검토 · 리스크 인증 · 건설포렌식</p>
+
+            <p className="footer-section-title">Structural Risk &amp; Engineering Decision</p>
+            <p>
+              구조안전 리스크 평가 · 구조기술사 검토 · 리스크 인증 · 건설포렌식 · 법원감정
+            </p>
+
             <p>Email: info@magos.ai.kr (Official Inquiries)</p>
             <p>Admin: ceo@magos.ai.kr</p>
             <p>Official Website: magos.ai.kr</p>
-            <p>Secondary Domain (Reserved): magos.co.kr</p>
-            <p>© 2026 MAGOS. All rights reserved.</p>
+            <p>Future Main Domain: magos.co.kr</p>
+
+            <p className="footer-copyright">© 2026 MAGOS. All rights reserved.</p>
           </div>
 
           <div className="footer-nav">
