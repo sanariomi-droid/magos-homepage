@@ -10,7 +10,7 @@ const LOGO_SRC = "/magos_logo.png";
    EmailJS 실제 값
 ========================= */
 const EMAILJS_SERVICE_ID = "service_grnbxc8";
-const EMAILJS_TEMPLATE_ID = "template_c36d68cj";
+const EMAILJS_TEMPLATE_ID = "template_c36d68c";
 const EMAILJS_PUBLIC_KEY = "GvUELP6idsY4ppGNa";
 
 /* =========================
