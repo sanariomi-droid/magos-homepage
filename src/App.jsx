@@ -7,15 +7,65 @@ import html2canvas from "html2canvas";
 const LOGO_SRC = "/magos_logo.png";
 
 /* =========================
-   EmailJS 실제 값으로 교체
+   EmailJS 실제 값
 ========================= */
 const EMAILJS_SERVICE_ID = "service_grnbxc8";
-const EMAILJS_TEMPLATE_ID = "template_ry142uj";
+const EMAILJS_TEMPLATE_ID = "template_c36d68cj";
 const EMAILJS_PUBLIC_KEY = "GvUELP6idsY4ppGNa";
 
 /* =========================
    DATA
 ========================= */
+const HERO_POINTS = [
+  "구조안전 리스크 평가",
+  "구조기술사 검토",
+  "리스크 인증",
+  "건설포렌식",
+  "법원감정용 전자증거 패키지",
+];
+
+const DIFFERENTIATORS = [
+  {
+    title: "특허 기반 플랫폼",
+    desc: "6개 특허 축을 기반으로 데이터 신뢰성, 리스크 인증, 전문가 협업, 포렌식, 전자적 증거 패키지를 하나로 연결합니다.",
+  },
+  {
+    title: "기술사 검토 연계",
+    desc: "구조기술사의 공학적 판단을 리스크 수치, 인증, 절차 추적, 최종 산출물과 연결합니다.",
+  },
+  {
+    title: "인증·보험·포렌식 확장",
+    desc: "구조안전 평가에 그치지 않고 보험, 유지관리, 분쟁 대응, 법원감정까지 확장 가능한 구조를 지향합니다.",
+  },
+];
+
+const CLIENT_SERVICES = [
+  {
+    title: "설계 발주처 / 공공기관",
+    desc: "구조안전 리스크 평가, 기술사 검토, 우선순위 판단, 공공 의사결정 보조",
+  },
+  {
+    title: "건설사 / 감리단",
+    desc: "시공단계 위험 검토, 보수·보강 판단, 조건부 승인 및 협업 검토",
+  },
+  {
+    title: "유지관리 기관 / 시설물 관리자",
+    desc: "점검 이력 기반 MRI 평가, 관리 우선순위, 자산군 리스크 비교",
+  },
+  {
+    title: "보험사 / 손해사정",
+    desc: "리스크 인증, 인수심사 보조지표, 사고 원인기여도 및 책임영향도 분석",
+  },
+  {
+    title: "분쟁 대응 / 포렌식",
+    desc: "사고 전후 비교, 설계·시공·유지관리 요인별 기여도, 포렌식 분석 보고서",
+  },
+  {
+    title: "법원감정 / 전자증거",
+    desc: "감정자료 구조화, 메타데이터, 증거 신뢰도, 해시 기반 전자적 증거 패키지",
+  },
+];
+
 const PATENT_LAYERS = [
   {
     id: "p1",
@@ -23,13 +73,7 @@ const PATENT_LAYERS = [
     title: "데이터 신뢰성 및 절차 추적",
     subtitle: "Data Trust & Procedure Trace",
     desc: "입력데이터 수집, 출처·작성주체·변경이력·정합성 검증, 검토·보완·승인 절차 추적, 인증상태·인증번호·인증등급 생성을 수행하는 디지털 신뢰 레이어",
-    items: [
-      "입력데이터 수집",
-      "출처 / 작성주체 / 변경이력 / 정합성 검증",
-      "검토·보완·승인 절차 추적",
-      "인증상태 / 인증번호 / 인증등급 생성",
-      "QR / 전자문서 / 전자식별정보 출력",
-    ],
+    outputs: ["데이터 신뢰성 검토", "절차 추적 기록", "인증상태 / 인증번호"],
   },
   {
     id: "p2",
@@ -37,13 +81,7 @@ const PATENT_LAYERS = [
     title: "구조안전 리스크 인증 엔진",
     subtitle: "Structural Risk Certification Engine",
     desc: "PSI·DRI·BII·CLI를 기반으로 MRI와 MRI_final을 산정하고, 구조기술사 검토와 연계된 인증서를 생성하는 핵심 엔진",
-    items: [
-      "PSI / DRI / BII / CLI 산정",
-      "MRI / MRI_final 산정",
-      "Kd / Ki 보정",
-      "구조기술사 검토 연계",
-      "구조안전 리스크 인증서 생성",
-    ],
+    outputs: ["MRI / MRI_final", "구조안전 리스크 인증서", "검토연계 결과물"],
   },
   {
     id: "p3",
@@ -51,13 +89,7 @@ const PATENT_LAYERS = [
     title: "전문가 풀 협업 플랫폼",
     subtitle: "Expert Pool Collaboration Platform",
     desc: "프로젝트 접수, 전문가 자격·수행이력·신뢰도 관리, 총괄·분야별·보조 검토자 배정, 협업 검토, 성과평가 및 재배정 학습까지 연결하는 운영 플랫폼",
-    items: [
-      "프로젝트 접수",
-      "전문가 자격 / 수행이력 / 신뢰도 관리",
-      "총괄·분야별·보조 검토자 배정",
-      "협업 검토 수행",
-      "전문가 성과평가 및 재배정 학습",
-    ],
+    outputs: ["전문가 배정", "협업 검토 결과", "프로젝트 수행 이력"],
   },
   {
     id: "p4",
@@ -65,13 +97,7 @@ const PATENT_LAYERS = [
     title: "전문가 판단 정량화 레이어",
     subtitle: "Decision Intelligence Layer",
     desc: "서술형 전문가 판단을 위험증분·감소, 조건부 승인, 추가조사 필요성 등의 수치값으로 변환하고 복수 전문가 의견을 통합하여 최종 리스크를 보정하는 레이어",
-    items: [
-      "서술형 판단 정량화",
-      "위험증분 / 위험감소 수치화",
-      "조건부 승인 / 추가조사 반영",
-      "역할가중치·확신계수·감쇠계수 반영",
-      "복수 전문가 의견 통합(Je) / 최종 보정(Rf)",
-    ],
+    outputs: ["전문가 판단 수치화", "복수 의견 통합", "최종 리스크 보정"],
   },
   {
     id: "p5",
@@ -79,13 +105,7 @@ const PATENT_LAYERS = [
     title: "건설포렌식 및 원인분석",
     subtitle: "Construction Forensic & Cause Analysis",
     desc: "사전 리스크 평가와 사고 후 데이터를 연계하여 변화량, 원인기여도, 책임영향도를 분석하고 보험·손해사정·분쟁 대응으로 확장하는 포렌식 레이어",
-    items: [
-      "사전 리스크 평가와 사고 후 데이터 연계",
-      "사고 전후 변화량 분석",
-      "설계 / 시공 / 유지관리 요인별 원인기여도",
-      "책임영향도 분석",
-      "보험 / 손해사정 / 분쟁 대응 자료 생성",
-    ],
+    outputs: ["포렌식 보고서", "원인기여도 분석", "책임영향도 분석"],
   },
   {
     id: "p6",
@@ -93,25 +113,18 @@ const PATENT_LAYERS = [
     title: "전자적 증거 패키지 검증",
     subtitle: "Judicial Evidence Package Verification",
     desc: "감정자료 통합, 메타데이터 생성, 증거 신뢰도 정량화, 판단–근거자료 매핑, 해시 기반 무결성 검증을 포함하는 전자적 증거 패키지 구조",
-    items: [
-      "감정자료 통합",
-      "자료별 메타데이터 생성",
-      "자료별 증거 신뢰도 정량화",
-      "판단 항목–근거자료 매핑",
-      "개별 해시값 / 통합 해시값 / 제출문서 생성",
-    ],
+    outputs: ["전자적 증거 패키지", "해시 / 검증정보", "제출용 전자문서"],
   },
 ];
 
 const FLOW_ITEMS = [
-  "Input Layer",
-  "Data Trust",
-  "Risk Certification",
-  "Expert Collaboration",
-  "Decision Intelligence",
-  "Construction Forensic",
-  "Judicial Evidence",
-  "Output Layer",
+  "자료 접수",
+  "데이터 신뢰성 확인",
+  "MRI / 리스크 산정",
+  "기술사 검토",
+  "전문가 협업 / 정량화",
+  "인증 또는 포렌식 분석",
+  "보고서 / 증거 패키지 제공",
 ];
 
 const FREE_SERVICES = [
@@ -164,20 +177,25 @@ const PAID_SERVICES = [
   },
 ];
 
-const OUTPUTS = [
-  "구조안전 리스크 인증서",
-  "보험 인수심사 보조지표",
-  "유지관리 / 보수보강 우선순위",
-  "포트폴리오 리스크 순위",
-  "사고 원인기여도 및 책임영향도 분석서",
-  "손해사정 / 분쟁 대응 자료",
-  "법원감정용 전자적 증거 패키지",
-  "검증코드 / 해시 / 전자서명 기반 제출문서",
+const SAMPLE_OUTPUTS = [
+  {
+    title: "샘플 결과 1",
+    desc: "MRI 계산 결과 / 리스크 등급 / 권고사항 요약",
+  },
+  {
+    title: "샘플 결과 2",
+    desc: "정식 인증서 예시 / 검토정보 / 등급 / 발급 형식",
+  },
+  {
+    title: "샘플 결과 3",
+    desc: "포렌식 분석 1페이지 예시 / 원인기여도 / 책임영향도",
+  },
+  {
+    title: "샘플 결과 4",
+    desc: "전자적 증거 패키지 구조 / 해시 / 제출문서 구성",
+  },
 ];
 
-/* =========================
-   OVERLAY
-========================= */
 function OverlayPanel({ open, title, subtitle, onClose, children }) {
   useEffect(() => {
     if (!open) return;
@@ -231,6 +249,16 @@ export default function App() {
     message: "",
   });
 
+  const getInquiryType = (purpose) => {
+    if (purpose.includes("인증") || purpose.includes("검토")) return "cert";
+    if (
+      purpose.includes("포렌식") ||
+      purpose.includes("법원") ||
+      purpose.includes("손해사정")
+    ) return "forensic";
+    return "info";
+  };
+
   const [isSending, setIsSending] = useState(false);
   const [submitState, setSubmitState] = useState({
     type: "",
@@ -271,24 +299,35 @@ export default function App() {
     };
   }, [psi, dri, bii, cli, kd, ki]);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setContact((prev) => ({ ...prev, [name]: value }));
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitState({ type: "", message: "" });
 
     if (!contactFormRef.current) return;
 
+    const inquiryType = getInquiryType(contact.purpose);
+
     try {
       setIsSending(true);
 
-      await emailjs.sendForm(
+      await emailjs.send(
         EMAILJS_SERVICE_ID,
         EMAILJS_TEMPLATE_ID,
-        contactFormRef.current,
+        {
+          from_name: contact.name,
+          company: contact.company,
+          reply_to: contact.email,
+          phone: contact.phone,
+          purpose: contact.purpose,
+          message: contact.message,
+          inquiry_type: inquiryType,
+          subject_tag:
+            inquiryType === "cert"
+              ? "[인증 문의]"
+              : inquiryType === "forensic"
+              ? "[포렌식 / 법원감정]"
+              : "[일반 문의]",
+        },
         {
           publicKey: EMAILJS_PUBLIC_KEY,
         }
@@ -296,7 +335,12 @@ export default function App() {
 
       setSubmitState({
         type: "success",
-        message: "문의가 정상 접수되었습니다. 입력하신 이메일로 회신드릴 예정입니다.",
+        message:
+          inquiryType === "cert"
+            ? "구조안전 인증 문의가 접수되었습니다."
+            : inquiryType === "forensic"
+            ? "포렌식 / 법원감정 문의가 접수되었습니다."
+            : "문의가 정상 접수되었습니다.",
       });
 
       setContact({
@@ -311,8 +355,7 @@ export default function App() {
       console.error("EmailJS 전송 오류:", error);
       setSubmitState({
         type: "error",
-        message:
-          "문의 전송에 실패했습니다. Service ID / Template ID / Public Key / 템플릿 변수명을 확인해 주세요.",
+        message: "문의 전송 실패 (설정 확인 필요)",
       });
     } finally {
       setIsSending(false);
@@ -402,19 +445,29 @@ export default function App() {
       <main className="page-shell" id="home">
         <section className="hero">
           <div className="hero-main card">
-            <div className="eyebrow">PATENT-DRIVEN STRUCTURAL SAFETY PLATFORM</div>
+            <div className="eyebrow">OFFICIAL STRUCTURAL RISK PLATFORM</div>
+
             <h1>
-              구조안전 리스크를
+              구조안전 리스크 평가 ·
               <br />
-              숫자와 판단과 증거로
+              기술사 검토 · 리스크 인증 ·
               <br />
-              연결하는 MAGOS
+              포렌식까지 연결하는 MAGOS
             </h1>
+
             <p className="hero-description">
-              MAGOS는 입력데이터의 신뢰성 검증, MRI 기반 구조안전 리스크 인증,
-              전문가 협업, 전문가 판단 정량화, 사고 원인분석, 법원감정용 전자적
-              증거 패키지까지 하나의 통합 흐름으로 연결하는 구조안전 플랫폼입니다.
+              MAGOS Structure Engineering Lab은 구조안전 리스크를 정량화하고,
+              구조기술사의 공학적 판단을 데이터 기반으로 연결하여 인증, 의사결정,
+              보험 및 포렌식까지 확장하는 구조안전 리스크 플랫폼입니다.
             </p>
+
+            <div className="hero-keywords">
+              {HERO_POINTS.map((item) => (
+                <span className="hero-keyword" key={item}>
+                  {item}
+                </span>
+              ))}
+            </div>
 
             <div className="hero-actions">
               <button className="btn btn-primary" onClick={() => setOpenPanel("demo")}>
@@ -431,15 +484,15 @@ export default function App() {
             <div className="hero-stats">
               <div className="stat-card">
                 <span>Patent Stack</span>
-                <strong>6 Core Layers</strong>
+                <strong>6 Core Patents</strong>
               </div>
               <div className="stat-card">
-                <span>Risk Model</span>
+                <span>Core Engine</span>
                 <strong>MRI / MRI_final</strong>
               </div>
               <div className="stat-card">
                 <span>Applications</span>
-                <strong>보험 · 유지관리 · 포렌식 · 법원감정</strong>
+                <strong>인증 · 보험 · 유지관리 · 포렌식 · 법원감정</strong>
               </div>
             </div>
           </div>
@@ -447,8 +500,8 @@ export default function App() {
           <div className="hero-side">
             <div className="flow-card card">
               <div className="flow-head">
-                <span className="chip">Integrated Platform Flow</span>
-                <p>Input에서 인증·판단·포렌식·증거 패키지까지 연결</p>
+                <span className="chip">PROJECT FLOW</span>
+                <p>실제 의뢰가 접수되어 결과물이 제공되는 절차를 한 화면으로 정리했습니다.</p>
               </div>
 
               <div className="flow-list">
@@ -465,65 +518,67 @@ export default function App() {
 
         <section className="section">
           <div className="section-heading">
-            <div className="section-kicker">PLATFORM OVERVIEW</div>
-            <h2>플랫폼 개요</h2>
+            <div className="section-kicker">WHY MAGOS</div>
+            <h2>왜 MAGOS인가</h2>
             <p>
-              설계도서, 구조계산서, 시공기록, 점검결과, 계측데이터, 유지관리이력,
-              보수보강이력, 손상/사고데이터, 전문가 의견을 입력으로 받아 6개 특허
-              레이어를 통해 인증·평가·분석·증거화까지 연결합니다.
+              일반적인 구조검토 소개 페이지를 넘어, 구조안전 리스크를 데이터와 기술사
+              판단, 인증, 분쟁 대응까지 연결하는 플랫폼형 구조를 명확히 제시합니다.
             </p>
           </div>
 
           <div className="overview-grid">
-            <article className="card soft-card">
-              <h3>Input Layer</h3>
-              <p>
-                Infrastructure / Project / Accident Data를 통합 수집하고 동일
-                구조물 기준으로 정렬하여 평가 기반을 만듭니다.
-              </p>
-            </article>
-            <article className="card soft-card">
-              <h3>Core Platform Layer</h3>
-              <p>
-                Data Trust → Risk Certification → Expert Collaboration →
-                Decision Intelligence → Forensic → Judicial Evidence의 흐름으로
-                작동합니다.
-              </p>
-            </article>
-            <article className="card soft-card">
-              <h3>Output / Market Layer</h3>
-              <p>
-                인증서, 보험 보조지표, 유지관리 우선순위, 포렌식 보고서, 전자적
-                증거 패키지를 제공합니다.
-              </p>
-            </article>
+            {DIFFERENTIATORS.map((item) => (
+              <article className="card soft-card" key={item.title}>
+                <h3>{item.title}</h3>
+                <p>{item.desc}</p>
+              </article>
+            ))}
           </div>
         </section>
 
         <section className="section">
           <div className="section-heading">
-            <div className="section-kicker">FOUNDER</div>
-            <h2>대표 소개</h2>
+            <div className="section-kicker">OFFICE</div>
+            <h2>사무소 소개</h2>
           </div>
 
           <div className="founder card">
             <div className="founder-left">
-              <div className="founder-chip">MAGOS FOUNDER</div>
+              <div className="founder-chip">MAGOS STRUCTURE ENGINEERING LAB</div>
               <h3>김황준</h3>
               <div className="founder-role">공학박사 · 토목구조기술사</div>
             </div>
             <div className="founder-right">
               <p>
-                구조설계, 유지관리, 안전평가, 리스크 정량화, 전문가 판단 구조화,
-                건설포렌식, 법원감정 대응을 하나의 서비스 체계로 연결하는
-                구조기술사 기반 플랫폼을 설계하고 있습니다.
+                마고스 구조기술사사무소는 구조안전 리스크 평가, 구조기술사 검토,
+                리스크 인증, 건설포렌식 및 법원감정 대응을 하나의 서비스 체계로
+                연결하는 구조기술사 기반 플랫폼을 지향합니다.
               </p>
               <p>
-                MAGOS는 구조안전 판단을 단순 보고서가 아니라 추적 가능하고,
-                인증 가능하며, 분쟁 대응까지 확장 가능한 의사결정 체계로 만드는
-                것을 목표로 합니다.
+                구조안전 판단을 단순 보고서가 아니라 추적 가능하고, 인증 가능하며,
+                분쟁 대응까지 확장 가능한 의사결정 체계로 만들고자 합니다.
               </p>
             </div>
+          </div>
+        </section>
+
+        <section className="section">
+          <div className="section-heading">
+            <div className="section-kicker">CLIENT-ORIENTED SERVICES</div>
+            <h2>고객 기준 서비스 구조</h2>
+            <p>
+              고객이 자신의 상황에 맞는 의뢰 유형을 빠르게 찾을 수 있도록 서비스
+              대상을 기준으로 정리했습니다.
+            </p>
+          </div>
+
+          <div className="client-grid">
+            {CLIENT_SERVICES.map((item) => (
+              <article className="card client-card" key={item.title}>
+                <h3>{item.title}</h3>
+                <p>{item.desc}</p>
+              </article>
+            ))}
           </div>
         </section>
 
@@ -532,8 +587,8 @@ export default function App() {
             <div className="section-kicker">PATENT STACK</div>
             <h2>특허 6개 통합 구조</h2>
             <p>
-              홈페이지에서는 6개 특허 레이어를 한 번에 이해할 수 있도록 정리하고,
-              세부 서비스는 Services / Demo / Contact에서 열리도록 구성했습니다.
+              특허를 단순 나열하지 않고, 각 특허가 실제 고객 산출물과 어떻게 연결되는지
+              함께 보여주도록 재구성했습니다.
             </p>
           </div>
 
@@ -551,7 +606,7 @@ export default function App() {
                 <p className="patent-desc">{layer.desc}</p>
 
                 <div className="bullet-tags">
-                  {layer.items.map((item) => (
+                  {layer.outputs.map((item) => (
                     <span className="bullet-tag" key={item}>
                       {item}
                     </span>
@@ -565,11 +620,11 @@ export default function App() {
         <section className="section">
           <div className="cta-banner card">
             <div>
-              <div className="section-kicker">START</div>
-              <h2>무료 진단부터 시작하고 정식 서비스로 확장합니다</h2>
+              <div className="section-kicker">GET STARTED</div>
+              <h2>무료 진단부터 정식 인증 · 포렌식 · 증거 패키지까지 확장합니다</h2>
               <p>
-                Home에서는 핵심 구조를 선명하게 보여주고, Services / Demo /
-                Contact는 버튼 클릭 시 고급 패널로 열리도록 설계했습니다.
+                Home에서는 공식성과 핵심 구조를 선명하게 보여주고, Services / Demo /
+                Contact에서는 실제 의뢰와 연결되는 상세 화면을 열어봅니다.
               </p>
             </div>
             <div className="cta-buttons">
@@ -585,29 +640,22 @@ export default function App() {
             </div>
           </div>
         </section>
-
-        <section className="section">
-          <div className="section-heading">
-            <div className="section-kicker">OUTPUTS</div>
-            <h2>주요 산출물</h2>
-          </div>
-
-          <div className="outputs-grid">
-            {OUTPUTS.map((item) => (
-              <div className="card output-card" key={item}>
-                {item}
-              </div>
-            ))}
-          </div>
-        </section>
       </main>
 
-      <footer className="site-footer">
-        <div className="site-footer-inner">
-          <div>
-            <strong>MAGOS Structure Engineering Lab</strong>
-            <span>Structural Risk &amp; Engineering Decision Platform</span>
+      <footer className="site-footer official-footer">
+        <div className="site-footer-inner official-footer-inner">
+          <div className="footer-office">
+            <strong>마고스 구조기술사사무소</strong>
+            <span>MAGOS Structure Engineering Lab</span>
+            <p>대표: 김황준 (공학박사, 토목구조기술사)</p>
+            <p>구조안전 리스크 평가 · 구조기술사 검토 · 리스크 인증 · 건설포렌식</p>
+            <p>Email: info@magos.ai.kr (Official Inquiries)</p>
+            <p>Admin: ceo@magos.ai.kr</p>
+            <p>Official Website: magos.ai.kr</p>
+            <p>Secondary Domain (Reserved): magos.co.kr</p>
+            <p>© 2026 MAGOS. All rights reserved.</p>
           </div>
+
           <div className="footer-nav">
             <button onClick={() => setOpenPanel("services")}>Services</button>
             <button onClick={() => setOpenPanel("demo")}>Demo</button>
@@ -619,7 +667,7 @@ export default function App() {
       <OverlayPanel
         open={openPanel === "services"}
         title="Services"
-        subtitle="FREE / PREMIUM SERVICE LINES"
+        subtitle="FREE / PREMIUM / CLIENT-ORIENTED"
         onClose={() => setOpenPanel(null)}
       >
         <div className="services-panel-grid">
@@ -660,7 +708,7 @@ export default function App() {
       <OverlayPanel
         open={openPanel === "demo"}
         title="Demo"
-        subtitle="MRI QUICK DIAGNOSTIC"
+        subtitle="MRI QUICK DIAGNOSTIC / SAMPLE OUTPUTS"
         onClose={() => setOpenPanel(null)}
       >
         <div className="demo-panel-grid">
@@ -775,18 +823,27 @@ export default function App() {
             <div className="premium-guide">
               <strong>유료 고급분석 안내</strong>
               <p>
-                정식 서비스에서는 구조기술사 검토, 전문가 판단 정량화, 포렌식
-                분석, 전자적 증거 패키지 생성까지 확장됩니다.
+                정식 서비스에서는 구조기술사 검토 연계 인증, 전문가 판단 정량화 보정,
+                포렌식 원인분석, 법원감정용 전자적 증거 패키지까지 확장됩니다.
               </p>
             </div>
           </div>
+        </div>
+
+        <div className="sample-output-grid">
+          {SAMPLE_OUTPUTS.map((item) => (
+            <div className="card sample-output-card" key={item.title}>
+              <strong>{item.title}</strong>
+              <p>{item.desc}</p>
+            </div>
+          ))}
         </div>
       </OverlayPanel>
 
       <OverlayPanel
         open={openPanel === "contact"}
         title="Contact"
-        subtitle="INQUIRY / CONSULTING / QUOTATION"
+        subtitle="INQUIRY / CONSULTING / QUOTATION REQUEST"
         onClose={() => setOpenPanel(null)}
       >
         <form ref={contactFormRef} className="contact-form-wrap" onSubmit={handleSubmit}>
@@ -804,7 +861,7 @@ export default function App() {
             </label>
 
             <label>
-              회사명
+              회사명 / 기관명
               <input
                 name="company"
                 value={contact.company}
@@ -840,7 +897,7 @@ export default function App() {
             </label>
 
             <label className="full">
-              문의 유형
+              의뢰 유형
               <select
                 name="purpose"
                 value={contact.purpose}
@@ -853,9 +910,14 @@ export default function App() {
                 <option>견적 요청</option>
                 <option>포렌식 원인분석 보고서</option>
                 <option>법원감정용 전자적 증거 패키지</option>
+                <option>보험 / 손해사정 대응 패키지</option>
                 <option>기관용 API / SaaS 문의</option>
               </select>
             </label>
+
+            <div className="contact-hint">
+              선택한 유형에 따라 담당 서비스로 자동 분류됩니다.
+            </div>
 
             <label className="full">
               문의 내용
@@ -866,7 +928,7 @@ export default function App() {
                 onChange={(e) =>
                   setContact((prev) => ({ ...prev, message: e.target.value }))
                 }
-                placeholder="프로젝트 개요, 구조물 유형, 필요한 서비스, 일정 등을 입력하세요."
+                placeholder="프로젝트 개요, 구조물 유형, 필요한 서비스, 일정, 목적을 입력하세요."
               />
             </label>
           </div>
@@ -901,9 +963,6 @@ export default function App() {
         </form>
       </OverlayPanel>
 
-      {/* =========================
-          PDF용 숨김 보고서
-      ========================= */}
       <div
         style={{
           position: "fixed",
