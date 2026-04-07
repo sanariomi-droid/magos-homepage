@@ -652,9 +652,13 @@ export default function App() {
             <p>마고스 유한회사 (MAGOS Co., Ltd.)</p>
             <p>AI 기반 구조안전 리스크 플랫폼 · 데이터 · SaaS</p>
 
+            <div className="footer-divider" />
+
             <p className="footer-section-title">[Engineering Office]</p>
             <p>마고스 구조기술사사무소 (MAGOS Structure Engineering Lab)</p>
             <p>대표: 김황준 (공학박사, 토목구조기술사)</p>
+
+            <div className="footer-divider" />
 
             <p className="footer-section-title">Structural Risk &amp; Engineering Decision</p>
             <p>
