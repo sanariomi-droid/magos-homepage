@@ -17,52 +17,52 @@ const EMAILJS_PUBLIC_KEY = "GvUELP6idsY4ppGNa";
    DATA
 ========================= */
 const HERO_POINTS = [
-  "구조안전 리스크 평가",
-  "구조기술사 검토",
-  "리스크 인증",
-  "건설포렌식",
-  "법원감정용 전자증거 패키지",
+  "데이터 신뢰성 검토",
+  "MRI / MRI_final 산정",
+  "구조기술사 검토 연계",
+  "전문가 협업 평가",
+  "포렌식 / 전자적 증거 자료 구성",
 ];
 
 const DIFFERENTIATORS = [
   {
-    title: "합의·조정 우선 구조",
-    desc: "문제가 발생한 뒤 바로 소송으로 가지 않고, 구조 리스크와 책임영향도를 수치화하여 먼저 합의 가능성을 판단하도록 설계했습니다.",
+    title: "데이터 기반 구조 리스크 정리",
+    desc: "설계도서, 시공기록, 점검결과, 계측데이터, 유지관리이력 등 구조 관련 자료를 통합하여 리스크를 정량적으로 정리합니다.",
   },
   {
-    title: "기술사 판단의 숫자화",
-    desc: "구조기술사의 공학적 판단을 리스크 수치, 책임영향도, 협상 기준 자료로 연결하여 실무에서 바로 쓰일 수 있게 만듭니다.",
+    title: "구조기술사 검토 연계 인증 구조",
+    desc: "PSI, DRI, BII, CLI 기반 MRI와 보정 리스크에 구조기술사 검토를 반영하여 인증서 및 기술자료 형태로 제공합니다.",
   },
   {
-    title: "보험·법원 확장 가능",
-    desc: "1차 목적은 합의이지만, 필요 시 보험 손해사정, 포렌식, 법원감정용 전자 증거 패키지까지 이어지는 확장 구조를 갖습니다.",
+    title: "포렌식 및 전자적 증거 확장",
+    desc: "필요 시 사고 전후 비교, 원인기여도, 책임영향도, 전자적 증거 자료 구성까지 이어지는 확장 구조를 갖습니다.",
   },
 ];
 
 const CLIENT_SERVICES = [
   {
     title: "설계 발주처 / 공공기관",
-    desc: "구조안전 리스크 평가, 기술사 검토, 우선순위 판단, 공공 의사결정 보조",
+    desc: "구조안전 리스크 평가, 기술사 검토, 우선순위 판단, 공공 의사결정 참고자료 제공",
   },
   {
     title: "건설사 / 감리단",
-    desc: "시공단계 위험 검토, 보수·보강 판단, 조건부 승인 및 협업 검토",
+    desc: "시공단계 위험 검토, 보수·보강 판단, 조건부 검토 및 전문가 협업 평가",
   },
   {
     title: "유지관리 기관 / 시설물 관리자",
-    desc: "점검 이력 기반 MRI 평가, 관리 우선순위, 자산군 리스크 비교",
+    desc: "점검 이력 기반 MRI 평가, 관리 우선순위, 자산군 리스크 비교 및 추적",
   },
   {
     title: "보험사 / 손해사정",
-    desc: "리스크 인증, 인수심사 보조지표, 사고 원인기여도 및 책임영향도 분석",
+    desc: "리스크 인증서, 인수심사 보조지표, 사고 원인기여도 및 책임영향도 분석 자료",
   },
   {
-    title: "분쟁 대응 / 포렌식",
+    title: "포렌식 분석 / 분쟁 참고자료",
     desc: "사고 전후 비교, 설계·시공·유지관리 요인별 기여도, 포렌식 분석 보고서",
   },
   {
-    title: "법원감정 / 전자증거",
-    desc: "감정자료 구조화, 메타데이터, 증거 신뢰도, 해시 기반 전자적 증거 패키지",
+    title: "감정 지원 / 전자증거 자료",
+    desc: "감정자료 구조화, 메타데이터, 증거 신뢰도, 해시 기반 전자적 증거 자료 구성",
   },
 ];
 
@@ -73,47 +73,47 @@ const PATENT_LAYERS = [
     title: "데이터 신뢰성 및 절차 추적",
     subtitle: "Data Trust & Procedure Trace",
     desc: "입력데이터 수집, 출처·작성주체·변경이력·정합성 검증, 검토·보완·승인 절차 추적, 인증상태·인증번호·인증등급 생성을 수행하는 디지털 신뢰 레이어",
-    outputs: ["데이터 신뢰성 검토", "절차 추적 기록", "인증상태 / 인증번호"],
+    outputs: ["데이터 신뢰성 평가", "판단 절차 추적", "인증상태 / 인증번호 / 인증등급"],
   },
   {
     id: "p2",
     no: "02",
     title: "구조안전 리스크 인증 엔진",
     subtitle: "Structural Risk Certification Engine",
-    desc: "PSI·DRI·BII·CLI를 기반으로 MRI와 MRI_final을 산정하고, 구조기술사 검토와 연계된 인증서를 생성하는 핵심 엔진",
-    outputs: ["MRI / MRI_final", "구조안전 리스크 인증서", "검토연계 결과물"],
+    desc: "PSI·DRI·BII·CLI를 기반으로 MRI와 MRI_final을 산정하고, Kd·Ki 및 구조기술사 검토를 반영한 인증 구조를 제공합니다.",
+    outputs: ["MRI / MRI_final", "구조안전 리스크 인증서", "보험·유지관리 참고자료"],
   },
   {
     id: "p3",
     no: "03",
     title: "전문가 풀 협업 플랫폼",
     subtitle: "Expert Pool Collaboration Platform",
-    desc: "프로젝트 접수, 전문가 자격·수행이력·신뢰도 관리, 총괄·분야별·보조 검토자 배정, 협업 검토, 성과평가 및 재배정 학습까지 연결하는 운영 플랫폼",
-    outputs: ["전문가 배정", "협업 검토 결과", "프로젝트 수행 이력"],
+    desc: "프로젝트 접수, 전문가 자격·수행이력·신뢰도 관리, 총괄·분야별·보조 검토자 배정, 협업 검토, 성과평가 및 재배정 학습까지 연결합니다.",
+    outputs: ["전문가 배정", "협업 검토 결과", "구조물-전문가 연계 이력"],
   },
   {
     id: "p4",
     no: "04",
     title: "전문가 판단 정량화 레이어",
     subtitle: "Decision Intelligence Layer",
-    desc: "서술형 전문가 판단을 위험증분·감소, 조건부 승인, 추가조사 필요성 등의 수치값으로 변환하고 복수 전문가 의견을 통합하여 최종 리스크를 보정하는 레이어",
-    outputs: ["전문가 판단 수치화", "복수 의견 통합", "최종 리스크 보정"],
+    desc: "서술형 전문가 판단을 위험증분·감소, 조건부 승인, 추가조사 필요성 등의 정량 요소로 변환하고 통합 전문가 판단값을 산정합니다.",
+    outputs: ["전문가 판단 수치화", "복수 의견 통합", "최종 보정 리스크"],
   },
   {
     id: "p5",
     no: "05",
     title: "건설포렌식 및 원인분석",
     subtitle: "Construction Forensic & Cause Analysis",
-    desc: "사전 리스크 평가와 사고 후 데이터를 연계하여 변화량, 원인기여도, 책임영향도를 분석하고 보험·손해사정·분쟁 대응으로 확장하는 포렌식 레이어",
+    desc: "사전 리스크 평가와 사고 후 데이터를 연계하여 변화량, 원인기여도, 책임영향도를 분석하고 보험·손해사정·기술검토 자료로 확장합니다.",
     outputs: ["포렌식 보고서", "원인기여도 분석", "책임영향도 분석"],
   },
   {
     id: "p6",
     no: "06",
-    title: "전자적 증거 패키지 검증",
+    title: "전자적 증거 자료 검증",
     subtitle: "Judicial Evidence Package Verification",
-    desc: "감정자료 통합, 메타데이터 생성, 증거 신뢰도 정량화, 판단–근거자료 매핑, 해시 기반 무결성 검증을 포함하는 전자적 증거 패키지 구조",
-    outputs: ["전자적 증거 패키지", "해시 / 검증정보", "제출용 전자문서"],
+    desc: "감정자료 통합, 메타데이터 생성, 증거 신뢰도 정량화, 판단–근거자료 매핑, 해시 기반 무결성 검증을 포함하는 전자적 증거 자료 구조입니다.",
+    outputs: ["전자적 증거 자료", "개별 / 통합 해시", "제출 참고용 전자문서"],
   },
 ];
 
@@ -121,10 +121,10 @@ const FLOW_ITEMS = [
   "자료 접수",
   "데이터 신뢰성 확인",
   "MRI / 리스크 산정",
-  "기술사 검토",
-  "전문가 협업 / 정량화",
+  "구조기술사 검토",
+  "전문가 협업 / 판단 정량화",
   "인증 또는 포렌식 분석",
-  "보고서 / 증거 패키지 제공",
+  "보고서 / 전자적 증거 자료 제공",
 ];
 
 const FREE_SERVICES = [
@@ -133,12 +133,12 @@ const FREE_SERVICES = [
     desc: "PSI, DRI, BII, CLI의 개념형 점수와 총점, 위험등급을 빠르게 확인합니다.",
   },
   {
-    title: "분쟁자료 보유 체크",
+    title: "데이터 체크리스트 진단",
     desc: "설계도서, 점검기록, 유지관리이력, 손상 사진, 계측자료 보유 여부를 빠르게 점검합니다.",
   },
   {
-    title: "합의 가능성 사전 진단",
-    desc: "현재 상황이 합의·조정형인지, 보험 대응형인지, 법원 대응형인지 1차로 분류합니다.",
+    title: "서비스별 사전 적합도 확인",
+    desc: "보험 참고자료형, 유지관리형, 포렌식형, 감정 지원형 중 적합한 방향을 1차로 확인합니다.",
   },
   {
     title: "샘플 리포트 미리보기",
@@ -148,51 +148,51 @@ const FREE_SERVICES = [
 
 const PAID_SERVICES = [
   {
-    title: "합의지원형 구조 리스크 평가",
-    desc: "소송 전 합의 가능 수준을 빠르게 판단하는 구조 리스크 평가 서비스",
+    title: "구조기술사 검토 연계 리스크 인증",
+    desc: "구조기술사 검토의견, Kd·Ki 보정, MRI_final, 인증번호와 인증등급을 반영한 인증 서비스",
   },
   {
-    title: "책임영향도 정량 분석",
-    desc: "설계 / 시공 / 유지관리 요인을 분해하여 책임영향도를 수치로 정리합니다.",
+    title: "전문가 참여형 정밀 평가",
+    desc: "총괄·분야별·보조 검토자 협업 구조로 프로젝트 난이도에 맞는 정밀 평가를 수행합니다.",
   },
   {
-    title: "합의협상 패키지",
-    desc: "리스크, 책임, 전문가 의견을 통합하여 협상 테이블에 바로 올릴 수 있는 자료를 제공합니다.",
+    title: "전문가 판단 보정 리스크 분석",
+    desc: "서술형 전문가 판단을 정량화하여 통합 전문가 판단값과 최종 보정 리스크를 산정합니다.",
   },
   {
-    title: "전자 증거 정리 패키지",
-    desc: "자료 신뢰도 평가와 판단–근거 매핑을 통해 대응 논리를 구조화합니다.",
+    title: "포렌식 원인분석 보고서",
+    desc: "사고 전후 변화량, 설계·시공·유지관리 요인별 원인기여도를 정량적으로 분석합니다.",
   },
   {
-    title: "전문가 합의 조정",
-    desc: "다수 전문가의 의견을 정량화·통합하여 합의 도출 가능성을 높이는 프리미엄 서비스입니다.",
+    title: "책임영향도 분석 자료",
+    desc: "보험, 손해사정, 기술검토 및 의사결정 참고에 활용할 수 있는 책임영향도 자료를 제공합니다.",
   },
   {
-    title: "보험 / 손해사정 대응 패키지",
-    desc: "합의 실패 또는 보험 검토 단계에서 필요한 인수심사·손해사정 보조자료를 제공합니다.",
+    title: "전자적 증거 자료 구성",
+    desc: "메타데이터, 증거 신뢰도, 판단-근거 매핑, 개별 해시 / 통합 해시를 포함한 전자문서를 구성합니다.",
   },
   {
-    title: "법원감정용 전자적 증거 패키지",
-    desc: "최종적으로 법원 제출이 필요한 경우 메타데이터, 해시값, 제출용 전자문서를 생성합니다.",
+    title: "기관용 API / SaaS / 대시보드",
+    desc: "보험사, 공공기관, 시설물 관리자, 건설사·감리단을 위한 확장형 플랫폼 서비스입니다.",
   },
 ];
 
 const SAMPLE_OUTPUTS = [
   {
-    title: "합의 가능성 요약",
-    desc: "MRI 계산 결과 / 리스크 등급 / 협상 우선 검토 포인트",
+    title: "리스크 진단 요약",
+    desc: "MRI 계산 결과 / 리스크 등급 / 관리 참고 포인트",
   },
   {
     title: "책임영향도 예시",
     desc: "설계 / 시공 / 유지관리 책임영향도 분해 화면 예시",
   },
   {
-    title: "합의협상 보고서 예시",
-    desc: "협상용 1페이지 요약 / 원인기여도 / 핵심 쟁점 정리",
+    title: "포렌식 분석 보고서 예시",
+    desc: "전후 비교 / 원인기여도 / 핵심 쟁점 정리",
   },
   {
-    title: "확장 대응 패키지",
-    desc: "보험 대응 자료 / 전자 증거 패키지 / 제출문서 구성",
+    title: "전자적 증거 자료 예시",
+    desc: "메타데이터 / 증거 신뢰도 / 해시 검증 / 제출 참고용 문서 구성",
   },
 ];
 
@@ -230,6 +230,26 @@ function OverlayPanel({ open, title, subtitle, onClose, children }) {
   );
 }
 
+function LegalNotice() {
+  return (
+    <div
+      style={{
+        marginTop: "18px",
+        padding: "16px 18px",
+        borderRadius: "18px",
+        border: "1px solid rgba(255, 196, 107, 0.22)",
+        background: "rgba(255, 196, 107, 0.08)",
+        color: "#fff0cf",
+        lineHeight: 1.8,
+        fontSize: "14px",
+      }}
+    >
+      본 서비스는 구조기술사의 공학적 분석 및 기술자료 제공 서비스이며, 법률상담, 소송대리,
+      합의대행 등 법률사무를 수행하지 않습니다. 필요한 경우 변호사 등 관련 전문가와 협업하여 진행됩니다.
+    </div>
+  );
+}
+
 export default function App() {
   const [openPanel, setOpenPanel] = useState(null);
 
@@ -245,16 +265,9 @@ export default function App() {
     company: "",
     email: "",
     phone: "",
-    purpose: "합의지원형 구조 리스크 평가",
+    purpose: "구조기술사 검토 연계 리스크 인증",
     message: "",
   });
-
-  const getInquiryType = (purpose) => {
-    if (purpose.includes("합의") || purpose.includes("책임") || purpose.includes("협상")) return "settlement";
-    if (purpose.includes("법원") || purpose.includes("손해사정")) return "forensic";
-    if (purpose.includes("보험")) return "insurance";
-    return "info";
-  };
 
   const [isSending, setIsSending] = useState(false);
   const [submitState, setSubmitState] = useState({
@@ -280,7 +293,7 @@ export default function App() {
     } else if (final >= 65) {
       grade = "C";
       label = "위험";
-      comment = "기술사 검토와 정밀 분석 연계가 권장되는 수준입니다.";
+      comment = "구조기술사 검토 및 정밀 분석 연계가 권장되는 수준입니다.";
     } else if (final >= 50) {
       grade = "B";
       label = "관리 필요";
@@ -295,6 +308,14 @@ export default function App() {
       comment,
     };
   }, [psi, dri, bii, cli, kd, ki]);
+
+  const getInquiryType = (purpose) => {
+    if (purpose.includes("인증")) return "cert";
+    if (purpose.includes("포렌식") || purpose.includes("증거")) return "forensic";
+    if (purpose.includes("보험")) return "insurance";
+    if (purpose.includes("전문가")) return "expert";
+    return "info";
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -320,9 +341,13 @@ export default function App() {
           inquiry_type: inquiryType,
           subject_tag:
             inquiryType === "cert"
-              ? "[인증 문의]"
+              ? "[리스크 인증 문의]"
               : inquiryType === "forensic"
-              ? "[포렌식 / 법원감정]"
+              ? "[포렌식 / 전자증거 문의]"
+              : inquiryType === "insurance"
+              ? "[보험 참고자료 문의]"
+              : inquiryType === "expert"
+              ? "[전문가 협업 문의]"
               : "[일반 문의]",
         },
         {
@@ -333,12 +358,14 @@ export default function App() {
       setSubmitState({
         type: "success",
         message:
-          inquiryType === "settlement"
-            ? "합의·조정 서비스 문의가 접수되었습니다."
+          inquiryType === "cert"
+            ? "구조안전 리스크 인증 문의가 접수되었습니다."
             : inquiryType === "insurance"
-            ? "보험 / 손해사정 대응 문의가 접수되었습니다."
+            ? "보험 참고자료 문의가 접수되었습니다."
             : inquiryType === "forensic"
-            ? "법원감정 / 전자 증거 패키지 문의가 접수되었습니다."
+            ? "포렌식 / 전자적 증거 자료 문의가 접수되었습니다."
+            : inquiryType === "expert"
+            ? "전문가 협업 분석 문의가 접수되었습니다."
             : "문의가 정상 접수되었습니다.",
       });
 
@@ -347,7 +374,7 @@ export default function App() {
         company: "",
         email: "",
         phone: "",
-        purpose: "합의지원형 구조 리스크 평가",
+        purpose: "구조기술사 검토 연계 리스크 인증",
         message: "",
       });
     } catch (error) {
@@ -447,15 +474,15 @@ export default function App() {
             <div className="eyebrow">OFFICIAL STRUCTURAL RISK PLATFORM</div>
 
             <h1>
-              구조 분쟁을 소송 전에 <br />
-              데이터로 합의합니다.
+              구조 리스크를 <br />
+              데이터로 분석·정량화하여 <br />
+              의사결정을 지원합니다.
             </h1>
 
             <p className="hero-description">
-              구조기술사의 공학적 판단을 정량화하여
-              책임영향도와 구조 리스크를 수치로 제시하고,
-              소송 이전 단계에서 합의·조정이 가능하도록 돕는
-              실전형 구조 리스크 의사결정 플랫폼입니다.
+              설계·시공·유지관리 데이터를 기반으로 구조 리스크를 정량화하고,
+              구조기술사 검토, 전문가 협업, 포렌식 분석 및 전자적 증거 자료 구성까지
+              연결되는 구조 리스크 의사결정 플랫폼입니다.
             </p>
 
             <div className="hero-keywords">
@@ -475,7 +502,7 @@ export default function App() {
               </button>
 
               <button className="btn btn-secondary" onClick={() => setOpenPanel("services")}>
-                합의 서비스 보기
+                서비스 구조 보기
               </button>
 
               <button className="btn btn-ghost" onClick={() => setOpenPanel("contact")}>
@@ -484,12 +511,14 @@ export default function App() {
             </div>
 
             <p style={{ marginTop: "12px", color: "#8fc3ff" }}>
-              ※ 소송 전 합의·조정 판단을 위한 구조 리스크 분석 보고서 형식 제공
+              ※ 구조 리스크 정량화, 기술자료 생성, 보험·유지관리·감정 참고자료 제공
             </p>
 
             <p style={{ color: "#00ffa3", marginTop: "8px" }}>
-              ✔ 합의 실패 시 보험·법원 대응 자료로 확장 가능한 구조
+              ✔ 필요 시 포렌식 분석 및 전자적 증거 자료 구성까지 확장 가능한 구조
             </p>
+
+            <LegalNotice />
 
             <div className="hero-stats">
               <div className="stat-card">
@@ -502,7 +531,7 @@ export default function App() {
               </div>
               <div className="stat-card">
                 <span>Applications</span>
-                <strong>인증 · 보험 · 유지관리 · 포렌식 · 법원감정</strong>
+                <strong>인증 · 보험 · 유지관리 · 포렌식 · 전자증거</strong>
               </div>
             </div>
           </div>
@@ -511,7 +540,7 @@ export default function App() {
             <div className="flow-card card">
               <div className="flow-head">
                 <span className="chip">PROJECT FLOW</span>
-                <p>실제 의뢰가 접수되어 결과물이 제공되는 절차를 한 화면으로 정리했습니다.</p>
+                <p>실제 의뢰가 접수되어 기술자료가 제공되는 절차를 한 화면으로 정리했습니다.</p>
               </div>
 
               <div className="flow-list">
@@ -531,8 +560,8 @@ export default function App() {
             <div className="section-kicker">WHY MAGOS</div>
             <h2>왜 MAGOS인가</h2>
             <p>
-              일반적인 구조검토 소개 페이지를 넘어, 구조 리스크를 정량화하고 책임영향도를
-              구조화하여 합의·조정으로 먼저 연결하는 실전형 서비스 구조를 제시합니다.
+              구조 리스크를 정량화하고, 구조기술사 판단과 전문가 협업을 연결하며,
+              포렌식과 전자적 증거 자료 구성까지 이어지는 특허 기반 구조를 제공합니다.
             </p>
           </div>
 
@@ -561,12 +590,12 @@ export default function App() {
             <div className="founder-right">
               <p>
                 마고스 구조기술사사무소는 구조안전 리스크 평가, 구조기술사 검토,
-                리스크 인증, 건설포렌식 및 법원감정 대응을 하나의 서비스 체계로
+                리스크 인증, 건설포렌식 및 전자적 증거 자료 구성을 하나의 서비스 체계로
                 연결하는 구조기술사 기반 플랫폼을 지향합니다.
               </p>
               <p>
                 구조안전 판단을 단순 보고서가 아니라 추적 가능하고, 인증 가능하며,
-                분쟁 대응까지 확장 가능한 의사결정 체계로 만들고자 합니다.
+                보험·유지관리·감정 참고자료로 확장 가능한 의사결정 체계로 만들고자 합니다.
               </p>
             </div>
           </div>
@@ -577,8 +606,8 @@ export default function App() {
             <div className="section-kicker">CLIENT-ORIENTED SERVICES</div>
             <h2>고객 기준 서비스 구조</h2>
             <p>
-              고객이 지금 필요한 것이 합의·조정인지, 보험 대응인지, 법원감정 대비인지
-              빠르게 선택할 수 있도록 실제 의뢰 흐름 기준으로 정리했습니다.
+              고객이 지금 필요한 것이 인증인지, 보험 참고자료인지, 유지관리 판단인지,
+              포렌식 분석인지 빠르게 선택할 수 있도록 실제 의뢰 흐름 기준으로 정리했습니다.
             </p>
           </div>
 
@@ -597,8 +626,8 @@ export default function App() {
             <div className="section-kicker">PATENT STACK</div>
             <h2>특허 6개 통합 구조</h2>
             <p>
-              특허를 단순 나열하지 않고, 각 특허가 실제 고객 산출물과 어떻게 연결되는지
-              함께 보여주도록 재구성했습니다.
+              각 특허가 실제 고객 산출물과 어떻게 연결되는지 한 화면에서 볼 수 있도록
+              입력층 → 코어 플랫폼층 → 산출층 기준으로 정리했습니다.
             </p>
           </div>
 
@@ -631,18 +660,18 @@ export default function App() {
           <div className="cta-banner card">
             <div>
               <div className="section-kicker">GET STARTED</div>
-              <h2>무료 진단에서 합의·조정, 보험, 법원 대응까지 단계별로 확장합니다</h2>
+              <h2>무료 진단에서 인증, 전문가 협업, 포렌식, 전자적 증거 자료까지 단계별로 확장합니다</h2>
               <p>
-                가장 먼저 합의 가능성을 판단하고, 필요 시 보험 손해사정 자료와 법원감정용
-                전자 증거 패키지까지 이어지는 실전형 서비스 흐름을 제공합니다.
+                가장 먼저 구조 리스크를 정량화하고, 필요 시 구조기술사 검토, 보험 참고자료,
+                포렌식 분석, 전자적 증거 자료 구성까지 이어지는 실전형 서비스 흐름을 제공합니다.
               </p>
             </div>
             <div className="cta-buttons">
               <button className="btn btn-primary" onClick={() => setOpenPanel("demo")}>
-               무료 진단 시작
+                무료 진단 시작
               </button>
               <button className="btn btn-secondary" onClick={() => setOpenPanel("services")}>
-                합의 서비스 보기
+                서비스 구조 보기
               </button>
               <button className="btn btn-ghost" onClick={() => setOpenPanel("contact")}>
                 지금 상담 요청
@@ -672,7 +701,7 @@ export default function App() {
 
             <p className="footer-section-title">Structural Risk &amp; Engineering Decision</p>
             <p>
-              구조안전 리스크 평가 · 구조기술사 검토 · 리스크 인증 · 건설포렌식 · 법원감정
+              구조안전 리스크 평가 · 구조기술사 검토 · 리스크 인증 · 건설포렌식 · 전자적 증거 자료
             </p>
 
             <p>Email: info@magos.ai.kr (Official Inquiries)</p>
@@ -713,7 +742,7 @@ export default function App() {
 
           <div className="service-column premium">
             <div className="service-badge premium">PREMIUM</div>
-            <h4>합의·조정 기반 유료 서비스</h4>
+            <h4>유료 서비스 7개</h4>
             <div className="service-items">
               {PAID_SERVICES.map((item) => (
                 <div className="service-item" key={item.title}>
@@ -724,6 +753,8 @@ export default function App() {
             </div>
           </div>
         </div>
+
+        <LegalNotice />
 
         <div className="panel-cta">
           <button className="btn btn-primary" onClick={() => setOpenPanel("contact")}>
@@ -853,14 +884,16 @@ export default function App() {
             <div className="premium-guide">
               <strong>유료 고급분석 안내</strong>
               <p>
-                정식 서비스에서는 합의지원형 구조 리스크 평가, 책임영향도 정량 분석,
-                합의협상 패키지, 보험 대응 자료, 법원감정용 전자적 증거 패키지까지 확장됩니다.
+                정식 서비스에서는 구조기술사 검토 연계 리스크 인증, 전문가 참여형 정밀 평가,
+                전문가 판단 보정 리스크 분석, 포렌식 원인분석, 전자적 증거 자료 구성까지 확장됩니다.
               </p>
             </div>
 
+            <LegalNotice />
+
             <div style={{ marginTop: "20px" }}>
               <button className="btn btn-primary" onClick={() => setOpenPanel("contact")}>
-                📩 합의 가능성 검토 요청 (유료)
+                정밀 분석 요청
               </button>
             </div>
           </div>
@@ -893,24 +926,25 @@ export default function App() {
               lineHeight: 1.8,
             }}
           >
-            <h3 style={{ margin: "0 0 10px" }}>📌 서비스 안내</h3>
-            <p style={{ margin: "4px 0" }}>• 합의지원형 구조 리스크 평가: 100~300만원</p>
-            <p style={{ margin: "4px 0" }}>• 책임영향도 분석 및 협상 패키지: 300~1,500만원</p>
-            <p style={{ margin: "4px 0" }}>• 전문가 합의 조정 / 보험·법원 대응: 별도 협의</p>
+            <h3 style={{ margin: "0 0 10px" }}>서비스 안내</h3>
+            <p style={{ margin: "4px 0" }}>• 구조기술사 검토 연계 리스크 인증: 별도 협의</p>
+            <p style={{ margin: "4px 0" }}>• 포렌식 원인분석 및 책임영향도 자료: 별도 협의</p>
+            <p style={{ margin: "4px 0" }}>• 전자적 증거 자료 구성 / 기관용 서비스: 별도 협의</p>
             <p style={{ margin: "10px 0 0", color: "#9ec8ff", fontSize: "13px" }}>
-              ※ 본 서비스는 소송 이전 단계에서 합의·조정을 지원하는 구조 분석 자료이며, 필요 시 보험·법원 대응 자료로 확장됩니다.
+              ※ 구조 관련 데이터, 현재 상황, 필요한 기술자료 유형을 알려주시면 적합한 분석 방향을 먼저 제안드립니다.
             </p>
           </div>
 
+          <LegalNotice />
 
           <div className="contact-fast-track">
             <div className="fast-track-card">
               <strong>가장 빠른 시작 방법</strong>
-              <p>도면, 사진, 점검자료 중 가능한 자료 1건만 보내주시면 합의 가능성부터 먼저 검토합니다.</p>
+              <p>도면, 사진, 점검자료 중 가능한 자료 1건만 보내주시면 서비스 방향부터 먼저 검토합니다.</p>
             </div>
             <div className="fast-track-card highlight">
-              <strong>권장 의뢰 순서</strong>
-              <p>합의·조정 → 보험 / 손해사정 → 법원감정 대응 순으로 진행하는 것이 가장 효율적입니다.</p>
+              <strong>권장 의뢰 흐름</strong>
+              <p>기본 진단 → 구조기술사 검토 / 정밀 평가 → 포렌식 / 전자적 증거 자료 구성 순으로 진행하는 것이 가장 효율적입니다.</p>
             </div>
           </div>
 
@@ -972,18 +1006,21 @@ export default function App() {
                   setContact((prev) => ({ ...prev, purpose: e.target.value }))
                 }
               >
-                <option>합의지원형 구조 리스크 평가</option>
-                <option>책임영향도 정량 분석</option>
-                <option>합의협상 패키지</option>
+                <option>구조기술사 검토 연계 리스크 인증</option>
+                <option>전문가 참여형 정밀 평가</option>
+                <option>전문가 판단 보정 리스크 분석</option>
+                <option>포렌식 원인분석 보고서</option>
+                <option>책임영향도 분석 자료</option>
+                <option>보험 참고자료</option>
+                <option>전자적 증거 자료 구성</option>
+                <option>기관용 API / SaaS / 대시보드</option>
                 <option>상담 예약</option>
                 <option>견적 요청</option>
-                <option>보험 / 손해사정 대응 패키지</option>
-                <option>법원감정용 전자적 증거 패키지</option>
               </select>
             </label>
 
             <div className="contact-hint">
-              선택한 유형에 따라 담당 서비스로 자동 분류됩니다.
+              선택한 유형에 따라 리스크 인증, 보험 참고자료, 포렌식, 전자적 증거 자료 등으로 자동 분류됩니다.
             </div>
 
             <label className="full">
@@ -995,7 +1032,7 @@ export default function App() {
                 onChange={(e) =>
                   setContact((prev) => ({ ...prev, message: e.target.value }))
                 }
-                placeholder="프로젝트 개요, 구조물 유형, 필요한 서비스, 일정, 목적을 입력하세요."
+                placeholder="프로젝트 개요, 구조물 유형, 현재 상황, 필요한 기술자료, 일정 등을 입력하세요."
               />
             </label>
           </div>
@@ -1031,7 +1068,7 @@ export default function App() {
             </button>
           </div>
           <p className="contact-final-note">
-            첫 상담에서는 “소송까지 가는지”보다 “지금 합의 가능한 구간인지”를 먼저 판단합니다.
+            첫 상담에서는 현재 데이터 상태와 필요한 기술자료 유형을 먼저 확인합니다.
           </p>
         </form>
       </OverlayPanel>
@@ -1126,10 +1163,10 @@ export default function App() {
               <br />
               <br />
               정식 서비스에서는 구조기술사 검토 연계 인증, 전문가 판단 정량화 보정,
-              포렌식 원인분석, 법원감정용 전자적 증거 패키지까지 확장될 수 있습니다.
+              포렌식 원인분석, 전자적 증거 자료 구성까지 확장될 수 있습니다.
               <br />
               <br />
-              본 결과는 참고용 자료이며, 보험사·법원·공공기관의 최종 판단 또는 채택을 보장하지 않습니다.
+              본 결과는 참고용 자료이며, 보험사·법원·공공기관의 최종 판단을 대체하지 않습니다.
             </div>
           </div>
         </div>
