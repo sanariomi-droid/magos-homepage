@@ -251,6 +251,16 @@ function LegalNotice() {
   );
 }
 
+function PremiumButton({ className = "", icon, text, onClick, type = "button", disabled = false }) {
+  return (
+    <button type={type} className={`btn btn-premium ${className}`.trim()} onClick={onClick} disabled={disabled}>
+      <span className="btn-icon">{icon}</span>
+      <span className="btn-text">{text}</span>
+      <span className="btn-arrow">→</span>
+    </button>
+  );
+}
+
 export default function App() {
   const [openPanel, setOpenPanel] = useState(null);
 
@@ -278,6 +288,18 @@ export default function App() {
 
   const contactFormRef = useRef(null);
   const pdfReportRef = useRef(null);
+
+  const openContactPanel = () => {
+    setOpenPanel("contact");
+    setTimeout(() => {
+      const el = document.getElementById("contact-form");
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
+        const firstInput = el.querySelector("input, select, textarea");
+        if (firstInput) firstInput.focus();
+      }
+    }, 140);
+  };
 
   const diagnosis = useMemo(() => {
     const mri = psi * 0.35 + dri * 0.3 + bii * 0.2 + cli * 0.15;
@@ -463,7 +485,7 @@ export default function App() {
           <button className="nav-link" onClick={() => setOpenPanel("demo")}>
             Demo
           </button>
-          <button className="nav-link" onClick={() => setOpenPanel("contact")}>
+          <button className="nav-link" onClick={openContactPanel}>
             Contact
           </button>
         </nav>
@@ -482,8 +504,8 @@ export default function App() {
 
             <p className="hero-description">
               설계·시공·유지관리 데이터를 구조안전 리스크 수치로 정량화하여, <br />
-              구조기술사 검토, 전문가 협업, 포렌식 분석 및 전자적 증거 자료 구성까지 <br />
-              연결되는 구조 리스크 의사결정 플랫폼입니다.
+              구조기술사 검토, 전문가 협업, 포렌식 분석 및 전자적 증거 자료 구성까지 연결되는 <br />
+              구조 리스크 의사결정 플랫폼입니다.
             </p>
 
             <div className="hero-keywords">
@@ -495,20 +517,26 @@ export default function App() {
             </div>
 
             <div className="hero-actions">
-              <button
-                className="btn btn-primary"
+              <PremiumButton
+                className="btn-primary"
+                icon="⚙️"
+                text="MRI 무료 진단 시작"
                 onClick={() => setOpenPanel("demo")}
-              >
-                무료 진단 시작
-              </button>
+              />
 
-              <button className="btn btn-secondary" onClick={() => setOpenPanel("services")}>
-                서비스 구조 보기
-              </button>
+              <PremiumButton
+                className="btn-secondary"
+                icon="📐"
+                text="서비스 구조 보기"
+                onClick={() => setOpenPanel("services")}
+              />
 
-              <button className="btn btn-ghost" onClick={() => setOpenPanel("contact")}>
-                지금 상담 요청
-              </button>
+              <PremiumButton
+                className="btn-ghost contact-focus"
+                icon="📩"
+                text="기술 상담 요청"
+                onClick={openContactPanel}
+              />
             </div>
 
             <p style={{ marginTop: "12px", color: "#8fc3ff" }}>
@@ -561,7 +589,8 @@ export default function App() {
             <div className="section-kicker">WHY MAGOS</div>
             <h2>왜 MAGOS인가</h2>
             <p>
-              구조안전 리스크를 수치로 정량화하고, 구조기술사 판단과 전문가 협업을 연결하며,<br />
+              구조안전 리스크를 수치로 정량화하고, 구조기술사 판단과 전문가 협업을 연결하며,
+              <br />
               포렌식과 전자적 증거 자료 구성까지 이어지는 특허 기반 구조를 제공합니다.
             </p>
           </div>
@@ -593,10 +622,11 @@ export default function App() {
                 마고스 구조기술사사무소는 <br />
                 구조안전 리스크 평가, 구조기술사 검토, 리스크 인증, <br />
                 건설포렌식 및 전자적 증거 자료 구성을 하나의 서비스 체계로 <br />
-                하나의 서비스 체계로 연결하는 구조가술사 기반 플랫폼을 지향합니다.
+                연결하는 구조기술사 기반 플랫폼을 지향합니다.
               </p>
               <p>
-                구조안전 판단을 단순 보고서가 아니라 추적 가능하고, 인증 가능하며,<br />
+                구조안전 판단을 단순 보고서가 아니라 추적 가능하고, 인증 가능하며,
+                <br />
                 보험·유지관리·감정 참고자료로 확장 가능한 의사결정 체계로 만들고자 합니다.
               </p>
             </div>
@@ -664,24 +694,36 @@ export default function App() {
           <div className="cta-banner card">
             <div>
               <div className="section-kicker">GET STARTED</div>
-              <h2>무료 진단에서 인증, 전문가 협업, 포렌식, <br />
-                전자적 증거 자료까지 단계별로 확장합니다</h2>
+              <h2>
+                무료 진단에서 인증, 전문가 협업, <br />
+                포렌식, 전자적 증거 자료까지 <br />
+                단계별로 확장합니다.
+              </h2>
               <p>
                 가장 먼저 구조 리스크를 수치로 정량화하고, <br />
-                필요 시 구조기술사 검토, 보험 참고자료,포렌식 분석, 전자적 증거 자료 구성까지 <br />
-                이어지는 실전형 서비스 흐름을 제공합니다.
+                필요 시 구조기술사 검토, 보험 참고자료, 포렌식 분석, 전자적 증거 자료 구성까지 이어지는 <br />
+                실전형 서비스 흐름을 제공합니다.
               </p>
             </div>
             <div className="cta-buttons">
-              <button className="btn btn-primary" onClick={() => setOpenPanel("demo")}>
-                무료 진단 시작
-              </button>
-              <button className="btn btn-secondary" onClick={() => setOpenPanel("services")}>
-                서비스 구조 보기
-              </button>
-              <button className="btn btn-ghost" onClick={() => setOpenPanel("contact")}>
-                지금 상담 요청
-              </button>
+              <PremiumButton
+                className="btn-primary"
+                icon="⚙️"
+                text="MRI 무료 진단 시작"
+                onClick={() => setOpenPanel("demo")}
+              />
+              <PremiumButton
+                className="btn-secondary"
+                icon="📐"
+                text="서비스 구조 보기"
+                onClick={() => setOpenPanel("services")}
+              />
+              <PremiumButton
+                className="btn-ghost contact-focus"
+                icon="📩"
+                text="기술 상담 요청"
+                onClick={openContactPanel}
+              />
             </div>
           </div>
         </section>
@@ -721,7 +763,7 @@ export default function App() {
           <div className="footer-nav">
             <button onClick={() => setOpenPanel("services")}>Services</button>
             <button onClick={() => setOpenPanel("demo")}>Demo</button>
-            <button onClick={() => setOpenPanel("contact")}>Contact</button>
+            <button onClick={openContactPanel}>Contact</button>
           </div>
         </div>
       </footer>
@@ -763,9 +805,12 @@ export default function App() {
         <LegalNotice />
 
         <div className="panel-cta">
-          <button className="btn btn-primary" onClick={() => setOpenPanel("contact")}>
-            지금 상담 요청
-          </button>
+          <PremiumButton
+            className="btn-primary"
+            icon="📩"
+            text="지금 상담 요청"
+            onClick={openContactPanel}
+          />
         </div>
       </OverlayPanel>
 
@@ -857,9 +902,12 @@ export default function App() {
             </label>
 
             <div className="panel-cta demo-download-row">
-              <button className="btn btn-primary" onClick={handleDownloadPdf} type="button">
-                PDF 다운로드
-              </button>
+              <PremiumButton
+                className="btn-primary"
+                icon="📄"
+                text="PDF 다운로드"
+                onClick={handleDownloadPdf}
+              />
             </div>
           </div>
 
@@ -890,7 +938,8 @@ export default function App() {
             <div className="premium-guide">
               <strong>유료 고급분석 안내</strong>
               <p>
-                정식 서비스에서는 구조기술사 검토 연계 리스크 인증, 전문가 참여형 정밀 평가,<br />
+                정식 서비스에서는 구조기술사 검토 연계 리스크 인증, 전문가 참여형 정밀 평가,
+                <br />
                 전문가 판단 보정 리스크 분석, 포렌식 원인분석, 전자적 증거 자료 구성까지 확장됩니다.
               </p>
             </div>
@@ -898,9 +947,12 @@ export default function App() {
             <LegalNotice />
 
             <div style={{ marginTop: "20px" }}>
-              <button className="btn btn-primary" onClick={() => setOpenPanel("contact")}>
-                정밀 분석 요청
-              </button>
+              <PremiumButton
+                className="btn-primary"
+                icon="🚀"
+                text="정밀 분석 요청"
+                onClick={openContactPanel}
+              />
             </div>
           </div>
         </div>
@@ -921,7 +973,13 @@ export default function App() {
         subtitle="INQUIRY / CONSULTING / QUOTATION REQUEST"
         onClose={() => setOpenPanel(null)}
       >
-        <form ref={contactFormRef} className="contact-form-wrap" onSubmit={handleSubmit}>
+        <form id="contact-form" ref={contactFormRef} className="contact-form-wrap" onSubmit={handleSubmit}>
+          <div className="contact-quick-badges">
+            <span>문의 접수</span>
+            <span>상담 예약</span>
+            <span>견적 요청</span>
+          </div>
+
           <div
             style={{
               marginBottom: "18px",
@@ -960,9 +1018,7 @@ export default function App() {
               <input
                 name="from_name"
                 value={contact.name}
-                onChange={(e) =>
-                  setContact((prev) => ({ ...prev, name: e.target.value }))
-                }
+                onChange={(e) => setContact((prev) => ({ ...prev, name: e.target.value }))}
                 placeholder="성함을 입력하세요"
               />
             </label>
@@ -972,9 +1028,7 @@ export default function App() {
               <input
                 name="company"
                 value={contact.company}
-                onChange={(e) =>
-                  setContact((prev) => ({ ...prev, company: e.target.value }))
-                }
+                onChange={(e) => setContact((prev) => ({ ...prev, company: e.target.value }))}
                 placeholder="회사 또는 기관명"
               />
             </label>
@@ -984,9 +1038,7 @@ export default function App() {
               <input
                 name="reply_to"
                 value={contact.email}
-                onChange={(e) =>
-                  setContact((prev) => ({ ...prev, email: e.target.value }))
-                }
+                onChange={(e) => setContact((prev) => ({ ...prev, email: e.target.value }))}
                 placeholder="example@email.com"
               />
             </label>
@@ -996,9 +1048,7 @@ export default function App() {
               <input
                 name="phone"
                 value={contact.phone}
-                onChange={(e) =>
-                  setContact((prev) => ({ ...prev, phone: e.target.value }))
-                }
+                onChange={(e) => setContact((prev) => ({ ...prev, phone: e.target.value }))}
                 placeholder="010-0000-0000"
               />
             </label>
@@ -1008,9 +1058,7 @@ export default function App() {
               <select
                 name="purpose"
                 value={contact.purpose}
-                onChange={(e) =>
-                  setContact((prev) => ({ ...prev, purpose: e.target.value }))
-                }
+                onChange={(e) => setContact((prev) => ({ ...prev, purpose: e.target.value }))}
               >
                 <option>구조기술사 검토 연계 리스크 인증</option>
                 <option>전문가 참여형 정밀 평가</option>
@@ -1035,9 +1083,7 @@ export default function App() {
                 rows="6"
                 name="message"
                 value={contact.message}
-                onChange={(e) =>
-                  setContact((prev) => ({ ...prev, message: e.target.value }))
-                }
+                onChange={(e) => setContact((prev) => ({ ...prev, message: e.target.value }))}
                 placeholder="프로젝트 개요, 구조물 유형, 현재 상황, 필요한 기술자료, 일정 등을 입력하세요."
               />
             </label>
@@ -1066,13 +1112,21 @@ export default function App() {
           )}
 
           <div className="panel-cta contact-submit-row">
-            <button type="submit" className="btn btn-primary" disabled={isSending}>
-              {isSending ? "전송 중..." : "자료 보내고 상담 시작"}
-            </button>
-            <button type="button" className="btn btn-secondary" onClick={() => setOpenPanel("demo")}>
-              먼저 무료 진단 보기
-            </button>
+            <PremiumButton
+              type="submit"
+              className="btn-primary"
+              icon="🚀"
+              text={isSending ? "전송 중..." : "자료 보내고 상담 시작"}
+              disabled={isSending}
+            />
+            <PremiumButton
+              className="btn-secondary"
+              icon="⚙️"
+              text="먼저 무료 진단 보기"
+              onClick={() => setOpenPanel("demo")}
+            />
           </div>
+
           <p className="contact-final-note">
             첫 상담에서는 현재 데이터 상태와 필요한 기술자료 유형을 먼저 확인합니다.
           </p>
