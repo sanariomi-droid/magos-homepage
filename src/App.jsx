@@ -497,15 +497,15 @@ export default function App() {
             <div className="eyebrow">OFFICIAL STRUCTURAL RISK PLATFORM</div>
 
             <h1>
-              구조안전 리스크를 <br />
-              수치로 정량화(MRI)하여 <br />
-              의사결정을 지원합니다.
+              구조 리스크를 수치(MRI)로 정량화하여 <br />
+              “책임·의사결정”까지 연결합니다. <br />
+              구조기술사 검토 기반 “인증서 형태 기술자료” 제공
             </h1>
 
             <p className="hero-description">
-              설계·시공·유지관리 데이터를 구조안전 리스크 수치로 정량화하여, <br />
-              구조기술사 검토, 전문가 협업, 포렌식 분석 및 전자적 증거 자료 구성까지 연결되는 <br />
-              구조 리스크 의사결정 플랫폼입니다.
+              설계·시공·유지관리 데이터를 기반으로 구조물의 위험도를 분석하고, <br />
+              구조기술사 검토를 반영한 인증서 형태의 기술자료를 제공합니다. <br />
+              필요 시 포렌식 분석과 전자적 증거 자료 구성까지 확장할 수 있습니다.
             </p>
 
             <div className="hero-keywords">
@@ -540,11 +540,11 @@ export default function App() {
             </div>
 
             <p style={{ marginTop: "12px", color: "#8fc3ff" }}>
-              ※ 구조안전 리스크 정량화, 기술자료 생성, 보험·유지관리·감정 참고자료 제공
+              ※ 구조 리스크 정량화 + 인증서 기반 기술자료 제공
             </p>
 
             <p style={{ color: "#00ffa3", marginTop: "8px" }}>
-              ✔ 필요 시 포렌식 분석 및 전자적 증거 자료 구성까지 확장 가능한 구조
+              ✔ 보험 인수심사 · 분쟁 대응 · 발주 의사결정에 직접 활용
             </p>
 
             <LegalNotice />
@@ -589,9 +589,9 @@ export default function App() {
             <div className="section-kicker">WHY MAGOS</div>
             <h2>왜 MAGOS인가</h2>
             <p>
-              구조안전 리스크를 수치로 정량화하고, 구조기술사 판단과 전문가 협업을 연결하며,
-              <br />
-              포렌식과 전자적 증거 자료 구성까지 이어지는 특허 기반 구조를 제공합니다.
+              구조 리스크를 수치로 정량화하고, 구조기술사 판단과 전문가 협업을 연결합니다. <br />
+              이를 “숫자 + 등급 + 인증서” 형태로 제공하여 실제 의사결정에 바로 활용할 수 있습니다. <br />
+              필요 시 포렌식 분석 및 전자적 증거 자료까지 확장됩니다.
             </p>
           </div>
 
@@ -695,9 +695,8 @@ export default function App() {
             <div>
               <div className="section-kicker">GET STARTED</div>
               <h2>
-                무료 진단에서 인증, 전문가 협업, <br />
-                포렌식, 전자적 증거 자료까지 <br />
-                단계별로 확장합니다.
+                무료 리스크 평가 → 구조기술사 검토 → 인증서 발급까지  <br />
+                실제 프로젝트에 바로 적용됩니다.
               </h2>
               <p>
                 가장 먼저 구조 리스크를 수치로 정량화하고, <br />
@@ -709,7 +708,7 @@ export default function App() {
               <PremiumButton
                 className="btn-primary"
                 icon="⚙️"
-                text="MRI 무료 진단 시작"
+                text="무료 구조 리스크 평가 받기"
                 onClick={() => setOpenPanel("demo")}
               />
               <PremiumButton
@@ -721,7 +720,7 @@ export default function App() {
               <PremiumButton
                 className="btn-ghost contact-focus"
                 icon="📩"
-                text="기술 상담 요청"
+                text="구조안전 검토 상담 요청"
                 onClick={openContactPanel}
               />
             </div>
@@ -778,7 +777,7 @@ export default function App() {
           <div className="service-column free">
             <div className="service-badge free">FREE</div>
             <h4>무료 서비스 4개</h4>
-            <div className="service-items">
+          <div className="service-items">
               {FREE_SERVICES.map((item) => (
                 <div className="service-item" key={item.title}>
                   <strong>{item.title}</strong>
@@ -824,7 +823,7 @@ export default function App() {
           <div className="card demo-box">
             <h4>MRI 기본 계산기</h4>
             <p className="demo-legal-note">
-              본 결과는 개념형 참고자료이며, 정식 검토·감정·인수심사 결과를 대체하지 않습니다.
+             ※ 본 결과는 간이 진단이며, 정식 구조기술사 검토 시 인증서 형태로 제공됩니다.
             </p>
 
             <label>
