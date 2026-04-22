@@ -218,15 +218,26 @@ export default function App() {
               </div>
 
               <h1 className="hero-title">
-                구조 리스크를 수치로 예지하고
+                구조 리스크를 수치로 
+                <br />
+                예지하고
                 <span>공학적 판단을 디지털로 표준화하는 OS</span>
-              </h1>
+              </h1> 
 
               <p className="hero-desc">
+                본 홈페이지의 내용은 사업 방향, 기술 구상, 협력 모델 및 실증 계획에 대한 
+                <br />
+                안내 목적으로 하며, 개별 프로젝트 적용 여부는 별도 검토 및 계약에 따릅니다.
+                <br />
                 본 플랫폼은 한국기술사회가 정립하는 공학적 판단 기준 및 절차 표준을
-                디지털로 구현하는 기술 플랫폼입니다. 특정 기업의 독점 구조가 아닌
-                개방형 생태계를 지향하며, MAGOS는 데이터 신뢰성, MRI, 전문가 판단,
-                포렌식, 전자적 증거 생성 기술을 구현합니다.
+                <br />
+                디지털로 구현하는 기술 플랫폼입니다. 
+                <br />
+                특정 기업의 독점 구조가 아닌 개방형 생태계를 지향하며, 
+                <br />
+                MAGOS는 데이터 신뢰성, MRI, 전문가 판단, 포렌식, 전자적 증거 생성 기술을 
+                <br />
+                구현합니다.
               </p>
 
               <div className="hero-actions">
@@ -244,19 +255,43 @@ export default function App() {
               <div className="metric-grid">
                 <div className="metric-card">
                   <div className="metric-label">Structure</div>
-                  <div className="metric-value">표준은 공공, 기술은 개방, 시장은 다수 참여</div>
+                  <div className="metric-value">표준은 공공, 
+                    <br />
+                    기술은 개방, 
+                    <br />
+                    시장은 다수 
+                    <br />
+                    참여</div>
                 </div>
                 <div className="metric-card">
                   <div className="metric-label">Core Value</div>
-                  <div className="metric-value">데이터 신뢰성 + MRI + 전문가 판단 + 포렌식</div>
+                  <div className="metric-value">데이터 신뢰성 
+                    <br />
+                    + MRI 
+                    <br />
+                    + 전문가 판단 
+                    <br />
+                    + 포렌식</div>
                 </div>
                 <div className="metric-card">
                   <div className="metric-label">Business</div>
-                  <div className="metric-value">운영 독점이 아닌 특허 기반 로열티 구조</div>
+                  <div className="metric-value">운영 독점이 
+                    <br />
+                    아닌 
+                    <br />
+                    특허 기반
+                    <br />
+                    로열티 구조</div>
                 </div>
                 <div className="metric-card">
                   <div className="metric-label">Output</div>
-                  <div className="metric-value">인증서, 보고서, 보험지표, 증거 패키지</div>
+                  <div className="metric-value">인증서, 
+                    <br />
+                    보고서, 
+                    <br />
+                    보험지표, 
+                    <br />
+                    증거 패키지</div>
                 </div>
               </div>
             </div>
@@ -266,7 +301,9 @@ export default function App() {
                 <div className="panel-head">
                   <div>
                     <div className="panel-sub">PLATFORM OVERVIEW</div>
-                    <h2>개방형 구조 리스크 의사결정 운영체계</h2>
+                    <h2>개방형 구조 리스크 
+                      <br />
+                      의사결정 운영체계</h2>
                   </div>
                   <div className="panel-badge">6 Patents Integrated</div>
                 </div>
@@ -276,7 +313,9 @@ export default function App() {
                     <div className="layer-no">A</div>
                     <div className="layer-body">
                       <div className="layer-eng">Authority</div>
-                      <h3>한국기술사회가 공학적 판단 기준과 절차 표준을 정립</h3>
+                      <h3>한국기술사회가 공학적 판단 기준과 
+                        <br />
+                        절차 표준을 정립</h3>
                     </div>
                   </div>
 
@@ -284,7 +323,9 @@ export default function App() {
                     <div className="layer-no">T</div>
                     <div className="layer-body">
                       <div className="layer-eng">Technology</div>
-                      <h3>MAGOS가 정량화 엔진, 절차 추적, 포렌식, 증거 패키지를 구현</h3>
+                      <h3>MAGOS가 정량화 엔진, 절차 추적, 
+                        <br />
+                        포렌식, 증거 패키지를 구현</h3>
                     </div>
                   </div>
 
@@ -292,14 +333,17 @@ export default function App() {
                     <div className="layer-no">M</div>
                     <div className="layer-body">
                       <div className="layer-eng">Market</div>
-                      <h3>보험사·공공기관·시설물 관리자·엔지니어링사가 함께 쓰는 개방형 구조</h3>
+                      <h3>보험사·공공기관·시설물 관리자
+                        <br />
+                        ·엔지니어링사가 함께 쓰는 개방형 구조</h3>
                     </div>
                   </div>
                 </div>
 
                 <div className="notice-box">
-                  본 시스템은 특정 기업의 독점 운영 모델이 아니라, 표준 기반 개방형 구조로
-                  다양한 사업자가 참여하는 생태계를 지향합니다.
+                  본 시스템은 특정 기업의 독점 운영 모델이 아니라, 
+                  <br />
+                  표준 기반 개방형 구조로 다양한 사업자가 참여하는 생태계를 지향합니다.
                 </div>
               </div>
             </div>
@@ -312,9 +356,13 @@ export default function App() {
               <div className="section-label">FOUNDER</div>
               <h2>대표 소개</h2>
               <p>
-                김황준 박사 · 토목구조기술사. 구조 리스크를 수치화하고, 공학적 판단을
-                디지털 의사결정 체계로 연결하는 구조 리스크 운영체계를 설계하고 있습니다.
-                플랫폼을 직접 독점 운영하기보다, 특허 기반 핵심 기술을 제공하는
+                김황준 공학박사 · 토목구조기술사. 구조 리스크를 수치화하고, 
+                <br />
+                공학적 판단을 디지털 의사결정 체계로 연결하는 구조 리스크 운영체계를 설계하고 있습니다.
+                <br />
+                플랫폼을 직접 독점 운영하기보다, 
+                <br />
+                특허 기반 핵심 기술을 제공하는
                 Core Technology Provider 구조를 지향합니다.
               </p>
             </div>
@@ -386,7 +434,7 @@ export default function App() {
           <div className="container">
             <div className="section-head">
               <div className="section-label">PATENT INTEGRATION</div>
-              <h2>특허 6개 통합 구조</h2>
+              <h2>특허출원 6개 통합 구조</h2>
               <p>
                 입력 데이터부터 리스크 인증, 전문가 협업, 포렌식, 법원감정용 전자적
                 증거 패키지까지 하나의 흐름으로 통합합니다.
@@ -459,15 +507,21 @@ export default function App() {
                 <div className="workflow-branch-row">
                   <div className="workflow-branch-box">
                     <h3>Insurance</h3>
-                    <p>보험 인수심사 보조지표, 조건부 승인, 추가점검 판단자료 생성</p>
+                    <p>보험 인수심사 보조지표, 조건부 승인, 
+                      <br />
+                      추가점검 판단자료 생성</p>
                   </div>
                   <div className="workflow-branch-box">
                     <h3>Maintenance</h3>
-                    <p>점검주기, 보수보강 우선순위, 포트폴리오 리스크 순위 제공</p>
+                    <p>점검주기, 보수보강 우선순위, 
+                      <br />
+                      포트폴리오 리스크 순위 제공</p>
                   </div>
                   <div className="workflow-branch-box">
                     <h3>Forensic & Evidence</h3>
-                    <p>원인기여도, 책임영향도, 전자적 증거 패키지 생성</p>
+                    <p>원인기여도, 책임영향도, 
+                      <br />
+                      전자적 증거 패키지 생성</p>
                   </div>
                 </div>
 
@@ -481,7 +535,9 @@ export default function App() {
                 </div>
 
                 <div className="workflow-last-box">
-                  무료 진단 → 정식 인증 → 전문가 참여형 정밀평가 → 포렌식 / 법원감정용
+                  무료 진단 → 정식 인증 → 전문가 참여형 정밀평가 
+                  <br />
+                  → 포렌식 / 법원감정용
                   증거 패키지로 확장되는 사업 구조
                 </div>
               </div>
