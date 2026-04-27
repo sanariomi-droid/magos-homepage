@@ -70,37 +70,37 @@ const freeServices = [
 
 const paidServices = [
   {
-    top: "PAID 01",
+    top: "SERVICE 01",
     title: "기술사 검토 연계 리스크 인증",
     desc: "구조기술사 검토의견, Kd·Ki 보정, 인증번호·인증등급, 전자문서 출력을 포함합니다.",
   },
   {
-    top: "PAID 02",
+    top: "SERVICE 02",
     title: "전문가 참여형 정밀 평가",
     desc: "총괄 검토자와 분야별 검토자를 배정하고 협업 검토 및 Je 정량화를 반영합니다.",
   },
   {
-    top: "PAID 03",
+    top: "SERVICE 03",
     title: "포렌식 원인분석 보고서",
-    desc: "사고 전후 변화량, 설계·시공·유지관리 요인별 기여도와 책임영향도를 분석합니다.",
+    desc: "사고 전후 변화량, 설계·시공·유지관리 요인별 기여도와 책임영향도 검토자료를 제공합니다.",
   },
   {
-    top: "PAID 04",
+    top: "SERVICE 04",
     title: "법원감정용 전자적 증거 패키지",
     desc: "자료별 메타데이터, 증거 신뢰도, 판단-근거 매핑, 해시 검증정보를 구성합니다.",
   },
   {
-    top: "PAID 05",
+    top: "SERVICE 05",
     title: "보험 인수심사 연계 리스크 평가",
-    desc: "보험 인수심사, 조건부 승인, 추가점검 판단을 위한 보조지표를 제공합니다.",
+    desc: "보험·공제 인수심사, 조건부 승인, 추가점검 검토에 활용할 수 있는 보조자료를 제공합니다.",
   },
   {
-    top: "PAID 06",
+    top: "SERVICE 06",
     title: "유지관리·보수보강 우선순위 분석",
     desc: "점검주기, 보수보강 우선순위, 포트폴리오 리스크 순위 도출을 지원합니다.",
   },
   {
-    top: "PAID 07",
+    top: "SERVICE 07",
     title: "API / SaaS / 기관용 대시보드",
     desc: "보험사, 공공기관, 시설물 관리자, 건설사 및 감리단과 연동 가능한 구조입니다.",
   },
@@ -418,20 +418,20 @@ export default function App() {
               </div>
 
               <h1 className="hero-title">
-                구조 리스크를 수치로 
+                시설물 구조 리스크를
                 <br />
-                예지하고
-                <span>공학적 판단을 디지털로 
+                사전에 수치화하고
+                <span>공학적 판단으로
                   <br />
-                  표준화하는 OS</span>
+                  예방 의사결정을 지원합니다</span>
               </h1> 
 
               <p className="hero-desc">
-                본 홈페이지의 내용은 사업 방향, 기술 구상, 협력 모델 및 실증 계획에 대한 안내 목적으로 하며, 개별 프로젝트 적용 여부는 별도 검토 및 계약에 따릅니다.
+                MAGOS는 설계·시공·점검·유지관리 데이터를 기반으로 시설물의 구조 리스크를 정량화하고, 전문가 검토와 리스크 보고서, 인증서, 포렌식·증거자료까지 연결하는 의사결정 지원 플랫폼입니다.
                 <br />
-                본 플랫폼은 한국기술사회가 정립하는 공학적 판단 기준 및 절차 표준을 디지털로 구현하는 기술 플랫폼입니다. 
+                공공기관, 지자체, 시설관리자, 보험·공제 기관은 고위험 시설물 선별, 보수·보강 우선순위, 예산 배분, 사고예방 조치, 배상 리스크 관리 자료로 활용할 수 있습니다.
                 <br />
-                특정 기업의 독점 구조가 아닌 개방형 생태계를 지향하며, MAGOS는 데이터 신뢰성, MRI, 전문가 판단, 포렌식, 전자적 증거 생성 기술을 구현합니다.
+                개별 프로젝트 적용 범위와 결과물은 보유 자료, 시설물 특성, 검토 목적 및 계약 조건에 따라 별도 협의합니다.
               </p>
 
               <div className="hero-actions">
@@ -452,43 +452,43 @@ export default function App() {
               <div className="metric-grid">
                 <div className="metric-card">
                   <div className="metric-label">Structure</div>
-                  <div className="metric-value">표준은 공공, 
+                  <div className="metric-value">공공시설물
                     <br />
-                    기술은 개방, 
+                    민간시설물
                     <br />
-                    시장은 다수 
+                    보험·공제
                     <br />
-                    참여</div>
+                    유지관리</div>
                 </div>
                 <div className="metric-card">
                   <div className="metric-label">Core Value</div>
-                  <div className="metric-value">데이터 신뢰성 
+                  <div className="metric-value">데이터 신뢰성
                     <br />
-                    + MRI 
+                    + MRI
                     <br />
-                    + 전문가 판단 
+                    + 전문가 검토
                     <br />
-                    + 포렌식</div>
+                    + 보고서</div>
                 </div>
                 <div className="metric-card">
                   <div className="metric-label">Business</div>
-                  <div className="metric-value">운영 독점이 
+                  <div className="metric-value">지자체·공제회
                     <br />
-                    아닌 
+                    보험사·시설관리자
                     <br />
-                    특허 기반
+                    단계별 도입
                     <br />
-                    로열티 구조</div>
+                    연동 가능</div>
                 </div>
                 <div className="metric-card">
                   <div className="metric-label">Output</div>
-                  <div className="metric-value">인증서, 
+                  <div className="metric-value">리스크 등급
                     <br />
-                    보고서, 
+                    보고서
                     <br />
-                    보험지표, 
+                    인증서
                     <br />
-                    증거 패키지</div>
+                    대시보드</div>
                 </div>
               </div>
             </div>
@@ -498,11 +498,11 @@ export default function App() {
                 <div className="panel-head">
                   <div>
                     <div className="panel-sub">PLATFORM OVERVIEW</div>
-                    <h2>개방형 구조 리스크 
+                    <h2>시설물 리스크
                       <br />
-                      의사결정 운영체계</h2>
+                      의사결정 지원 플랫폼</h2>
                   </div>
-                  <div className="panel-badge">6 Patents Integrated</div>
+                  <div className="panel-badge">6 Core Modules</div>
                 </div>
 
                 <div className="layer-list">
@@ -510,9 +510,9 @@ export default function App() {
                     <div className="layer-no">A</div>
                     <div className="layer-body">
                       <div className="layer-eng">Authority</div>
-                      <h3>한국기술사회가 공학적 판단 기준과 
+                      <h3>기술사 등 전문가 검토 절차를
                         <br />
-                        절차 표준을 정립</h3>
+                        리포트와 인증 흐름에 반영</h3>
                     </div>
                   </div>
 
@@ -520,9 +520,9 @@ export default function App() {
                     <div className="layer-no">T</div>
                     <div className="layer-body">
                       <div className="layer-eng">Technology</div>
-                      <h3>MAGOS가 정량화 엔진, 절차 추적, 
+                      <h3>MAGOS가 데이터 신뢰성, MRI,
                         <br />
-                        포렌식, 증거 패키지를 구현</h3>
+                        보고서·대시보드 생성을 지원</h3>
                     </div>
                   </div>
 
@@ -530,17 +530,15 @@ export default function App() {
                     <div className="layer-no">M</div>
                     <div className="layer-body">
                       <div className="layer-eng">Market</div>
-                      <h3>보험사·공공기관·시설물 관리자
+                      <h3>지자체·공제회·보험기관·시설관리자가
                         <br />
-                        ·엔지니어링사가 함께 쓰는 개방형 구조</h3>
+                        목적에 맞게 활용하는 확장형 구조</h3>
                     </div>
                   </div>
                 </div>
 
                 <div className="notice-box">
-                  본 시스템은 특정 기업의 독점 운영 모델이 아니라, 
-                  <br />
-                  표준 기반 개방형 구조로 다양한 사업자가 참여하는 생태계를 지향합니다.
+                  MAGOS는 공공시설물 안전관리, 보험·공제 리스크 분석, 유지관리 의사결정에 필요한 자료를 고객 목적에 맞춰 단계적으로 제공합니다.
                 </div>
               </div>
             </div>
@@ -553,12 +551,9 @@ export default function App() {
               <div className="section-label">FOUNDER</div>
               <h2>대표 소개</h2>
               <p>
-                김황준 공학박사 · 토목구조기술사. 구조 리스크를 수치화하고, 
-                공학적 판단을 디지털 의사결정 체계로 연결하는 구조 리스크 운영체계를 설계하고 있습니다.
+                김황준 공학박사 · 토목구조기술사가 구조물 안전, 유지관리, 공공 리스크 관리 경험을 바탕으로 MAGOS를 기획·설계하고 있습니다.
                 <br />
-                플랫폼을 직접 독점 운영하기보다, 
-                특허 기반 핵심 기술을 제공하는
-                Core Technology Provider 구조를 지향합니다.
+                MAGOS는 개별 프로젝트의 목적과 보유 데이터 수준에 맞춰 리스크 평가, 전문가 검토, 보고서·인증서, 포렌식 자료화까지 단계적으로 지원합니다.
               </p>
             </div>
           </div>
@@ -568,22 +563,21 @@ export default function App() {
           <div className="container">
             <div className="section-head">
               <div className="section-label">PLATFORM</div>
-              <h2>공공성 + 기술 + 시장을 분리한 구조</h2>
+              <h2>고객의 의사결정에 필요한 판단 근거를 구조화합니다</h2>
               <p>
-                기술사 판단의 공공성은 유지하고, 기술은 민간에 개방하며, 시장은 다양한
-                사업자가 참여하는 구조를 목표로 합니다.
+                시설물 관리자는 “어디가 위험한지, 무엇을 먼저 보수해야 하는지, 어떤 자료로 의사결정해야 하는지”가 필요합니다. MAGOS는 데이터, 전문가 검토, 리스크 등급, 보고서 출력을 하나의 흐름으로 정리합니다.
               </p>
             </div>
 
             <div className="role-grid">
               <div className="role-card role-card-cyan">
-                <div className="role-label">AUTHORITY LAYER</div>
-                <h2>한국기술사회</h2>
+                <div className="role-label">EXPERT REVIEW LAYER</div>
+                <h2>기술사·분야 전문가 검토</h2>
                 <div className="role-list">
-                  <div className="role-item">공학적 판단 기준 정립</div>
-                  <div className="role-item">검토 절차 및 윤리 기준</div>
-                  <div className="role-item">전문가 풀 공신력</div>
-                  <div className="role-item">표준의 제도화</div>
+                  <div className="role-item">공학적 판단 근거 정리</div>
+                  <div className="role-item">검토 절차 및 책임 범위 명확화</div>
+                  <div className="role-item">전문가 검토의 신뢰성 보강</div>
+                  <div className="role-item">보고서·인증서 신뢰도 보강</div>
                 </div>
               </div>
 
@@ -602,23 +596,23 @@ export default function App() {
             <div className="role-grid" style={{ marginTop: "20px" }}>
               <div className="role-card">
                 <div className="role-label">MARKET LAYER</div>
-                <h2>다수 사업자 참여 구조</h2>
+                <h2>주요 고객 및 적용 대상</h2>
                 <div className="role-list">
-                  <div className="role-item">보험사 / 재보험사</div>
-                  <div className="role-item">공공기관 / 시설물 관리자</div>
-                  <div className="role-item">엔지니어링사 / 감리단</div>
+                  <div className="role-item">보험사 / 공제기관</div>
+                  <div className="role-item">지방자치단체 / 공공기관</div>
+                  <div className="role-item">시설관리자 / 엔지니어링사</div>
                   <div className="role-item">API / SaaS / 기관용 대시보드</div>
                 </div>
               </div>
 
               <div className="role-card">
-                <div className="role-label">POSITIONING</div>
-                <h2>Core Technology Provider</h2>
+                <div className="role-label">CUSTOMER VALUE</div>
+                <h2>고객 적용 방식</h2>
                 <div className="role-list">
-                  <div className="role-item">운영 독점 지향 아님</div>
-                  <div className="role-item">특허 기반 핵심 기술 제공</div>
-                  <div className="role-item">로열티 기반 확산</div>
-                  <div className="role-item">개방형 생태계 구축</div>
+                  <div className="role-item">PoC부터 단계적 도입</div>
+                  <div className="role-item">기관별 데이터 연동 가능</div>
+                  <div className="role-item">보고서·대시보드 제공</div>
+                  <div className="role-item">API / SaaS 확장 가능</div>
                 </div>
               </div>
             </div>
@@ -628,11 +622,10 @@ export default function App() {
         <section className="section">
           <div className="container">
             <div className="section-head">
-              <div className="section-label">PATENT INTEGRATION</div>
-              <h2>특허출원 6개 통합 구조</h2>
+              <div className="section-label">TECHNOLOGY INTEGRATION</div>
+              <h2>핵심 기술 6개 통합 구조</h2>
               <p>
-                입력 데이터부터 리스크 인증, 전문가 협업, 포렌식, 법원감정용 전자적
-                증거 패키지까지 하나의 흐름으로 통합합니다.
+                입력 데이터부터 리스크 평가, 전문가 검토, 유지관리 판단, 사고 이후 포렌식 및 증거자료 구성까지 하나의 흐름으로 연결합니다.
               </p>
             </div>
 
@@ -667,10 +660,9 @@ export default function App() {
             <div className="section-head section-head-row">
               <div>
                 <div className="section-label">OPERATING FLOW</div>
-                <h2>구조 리스크를 수치로 예지·통합관리하는 OS</h2>
+                <h2>시설물 리스크를 평가·판단·관리로 연결하는 운영 흐름</h2>
                 <p>
-                  데이터 → 리스크 → 전문가 → 의사결정 → 포렌식 → 증거 생성까지
-                  연결되는 실행형 구조입니다.
+                  점검자료와 운영이력을 기반으로 리스크를 산정하고, 전문가 검토와 의사결정 자료로 전환한 뒤, 필요 시 사고 분석과 증거자료 구성까지 확장합니다.
                 </p>
               </div>
 
@@ -730,10 +722,9 @@ export default function App() {
                 </div>
 
                 <div className="workflow-last-box">
-                  무료 진단 → 정식 인증 → 전문가 참여형 정밀평가 
+                  간이 진단 → 정식 리스크 평가 → 전문가 검토 리포트
                   <br />
-                  → 포렌식 / 법원감정용
-                  증거 패키지로 확장되는 사업 구조
+                  → 포렌식 분석 / 증거자료 패키지까지 단계적으로 확장
                 </div>
               </div>
             </div>
@@ -876,8 +867,7 @@ export default function App() {
                   ))}
                 </div>
                 <div className="safe-notice">
-                  홈페이지에서는 “보험료를 절감해드립니다”가 아니라 “배상 리스크 절감 가능성을 분석합니다”,
-                  “공공시설물 사고예방 의사결정을 지원합니다”로 표현하는 것이 안전합니다.
+                  MAGOS는 보험료·공제료 인하를 보장하지 않습니다. 지자체별 시설물 현황, 사고이력, 보수이력, 공제·보험 운영자료를 바탕으로 배상 리스크 절감 가능성과 예방관리 효과를 분석합니다.
                 </div>
               </div>
             </div>
@@ -885,9 +875,9 @@ export default function App() {
             <div className="strategy-wrap">
               <div className="section-head">
                 <div className="section-label">POC ROADMAP</div>
-                <h2>시범사업 추진 순서</h2>
+                <h2>시범사업 검토 절차</h2>
                 <p>
-                  MAGOS 단독 제안이 아니라, 기술사회 연계형 공공 리스크 관리 제안으로 접근하는 구조입니다.
+                  시범사업은 공공기관의 보유자료, 기술사 등 전문가 검토체계, 공제·보험 운영자료를 함께 고려하여 단계적으로 검토하는 방식으로 제안드립니다.
                 </p>
               </div>
               <div className="poc-timeline">
@@ -944,7 +934,7 @@ export default function App() {
 
             <div className="insurance-link-panel">
               <div>
-                <strong>절감효과는 보장 문구가 아니라 ‘가정 기반 분석’으로 제시합니다.</strong>
+                <strong>절감효과는 지자체별 자료를 기반으로 별도 산정합니다.</strong>
                 <p>
                   예: 연간 배상 리스크 절감 가능성 = 기존 사고건수 × 평균 손해액 × 사고율 감소 가정.
                   실제 적용 시에는 지자체별 사고이력, 시설물 현황, 공제·보험 운영자료, 보수이력을 기반으로 별도 산정합니다.
@@ -968,7 +958,7 @@ export default function App() {
               </div>
 
               <button className="btn btn-outline" onClick={() => setInquiryTemplate("전문가 참여형 정밀 평가")}>
-                유료 고급분석 문의
+                정식 고급분석 문의
               </button>
             </div>
 
@@ -1143,7 +1133,7 @@ export default function App() {
                       </div>
 
                       <div className="report-interpretation">
-                        <h4>유료 고급분석 안내</h4>
+                        <h4>정식 고급분석 안내</h4>
                         <p>
                           정식 서비스에서는 구조기술사 검토 연계 인증, 전문가 참여형 정밀평가,
                           사고 원인분석, 법원감정용 전자적 증거 패키지까지 확장 가능합니다.
