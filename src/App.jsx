@@ -185,6 +185,98 @@ const insuranceRiskItems = [
 ];
 
 
+const compensationProcedure = [
+  {
+    no: "1",
+    title: "배상금 청구",
+    from: "피해자",
+    to: "지방자치단체",
+    desc: "공공영조물의 설치·관리 하자로 피해가 발생하면 피해자가 해당 지자체에 배상금 청구를 접수합니다.",
+    icon: "👤",
+  },
+  {
+    no: "2",
+    title: "배상금 신청",
+    from: "지방자치단체",
+    to: "공제회·손해보험사",
+    desc: "지자체는 사고 내용을 정리해 공제회 및 손해보험사 절차로 배상금 신청을 진행합니다.",
+    icon: "🏛️",
+  },
+  {
+    no: "3",
+    title: "사고처리 협의",
+    from: "공제회",
+    to: "손해보험사",
+    desc: "공제회와 손해보험사는 사고조사, 책임범위, 보상 가능성, 지급 절차를 협의합니다.",
+    icon: "🔶",
+  },
+  {
+    no: "4",
+    title: "배상금 지급",
+    from: "손해보험사",
+    to: "피해자",
+    desc: "협의 및 손해사정 결과에 따라 손해보험사를 통해 피해자에게 배상금이 지급됩니다.",
+    icon: "🏦",
+  },
+];
+
+const registrationProcedure = [
+  {
+    no: "1",
+    title: "공제 안내",
+    from: "공제회",
+    to: "지방자치단체",
+    desc: "공제회가 지자체에 영조물배상공제 가입·등록 절차와 대상시설 기준을 안내합니다.",
+  },
+  {
+    no: "2",
+    title: "공제 가입",
+    from: "지방자치단체",
+    to: "공제회",
+    desc: "지자체는 관리 중인 공공시설물 현황을 기준으로 공제 가입 또는 등록 절차를 진행합니다.",
+  },
+  {
+    no: "3",
+    title: "공제업무 체결",
+    from: "손해보험사",
+    to: "공제회",
+    desc: "공제회와 손해보험사는 사고처리 및 보상 운영을 위한 업무 체계를 구성합니다.",
+  },
+  {
+    no: "4",
+    title: "보험계약 일괄체결",
+    from: "공제회",
+    to: "손해보험사",
+    desc: "공제회는 지자체 가입 정보를 바탕으로 손해보험사와 일괄 계약 및 운영 구조를 연결합니다.",
+  },
+];
+
+const magosAttachPoints = [
+  {
+    label: "가입·갱신 전",
+    title: "시설군별 사전 리스크 평가",
+    desc: "공제 가입 또는 갱신 전에 도로, 교량, 보도, 공원시설, 공공건축물의 점검·사고·보수이력을 기반으로 MRI를 산정합니다.",
+  },
+  {
+    label: "운영 중",
+    title: "고위험 시설물 우선 선별",
+    desc: "민원, 사고위험, 시설 상태, 환경조건을 결합해 보수·보강 우선순위와 예산 배분 판단자료를 제공합니다.",
+  },
+  {
+    label: "사고 후",
+    title: "포렌식·증거자료 연계",
+    desc: "사전 평가 결과와 사고 후 조사자료를 비교하여 원인기여도, 책임영향도, 전자적 증거 패키지로 확장합니다.",
+  },
+];
+
+const pocRoadmap = [
+  "한국기술사회와 기술사 검토체계 및 전문가 풀 연계 구조 협의",
+  "한국지방재정공제회에 공공 리스크 관리형 시범사업 모델 제안",
+  "1개 지자체 또는 1개 시설군을 대상으로 10~30개 시설물 PoC 선정",
+  "MRI 산정, 위험등급화, 전문가 검토, 예방조치 권고 리포트 생성",
+  "사고위험, 민원, 보수우선순위, 배상 리스크 절감 가능성을 분석",
+];
+
 function getGrade(score) {
   if (score < 20) return { label: "A", className: "grade-a", text: "안정" };
   if (score < 40) return { label: "B", className: "grade-b", text: "관리 필요" };
@@ -649,61 +741,122 @@ export default function App() {
         </section>
 
 
-        <section id="public-sector" className="section public-section">
+        <section id="public-sector" className="section public-section public-sector-v2">
           <div className="container">
             <div className="public-hero-card">
               <div className="public-hero-content">
-                <div className="section-label">PUBLIC SECTOR</div>
+                <div className="public-badge">PUBLIC SECTOR LANDING</div>
                 <h2>공공영조물 안전관리 및<br />영조물배상 리스크 관리 플랫폼</h2>
                 <p>
-                  MAGOS는 공공시설물의 구조 리스크를 사전에 수치화하고, 기술사 검토와
-                  영조물배상 리스크 관리를 연계하여 지자체의 예방 중심 안전관리와
+                  MAGOS는 공공시설물의 구조 리스크를 사고 발생 전에 수치화하고,
+                  기술사 검토와 영조물배상 리스크 관리를 연계하여 지자체의 예방 중심 안전관리와
                   공제·보험 의사결정을 지원하는 공공 인프라 리스크 운영체계입니다.
                 </p>
-                <div className="hero-actions public-actions">
-                  <button className="btn btn-solid" onClick={() => setInquiryTemplate("공공영조물 시범사업 협력 문의")}>공공기관 협력 문의</button>
-                  <button className="btn btn-glass" onClick={() => scrollToSection("demo")}>MRI 데모 보기</button>
-                  <button className="btn btn-outline" onClick={() => scrollToSection("insurance-risk")}>공제·보험 연계 보기</button>
+                <div className="public-actions">
+                  <button className="btn btn-solid" onClick={() => scrollToSection("public-procedure")}>현행 배상·등록 절차 보기</button>
+                  <button className="btn btn-outline" onClick={() => setInquiryTemplate("공공영조물 안전관리 시범사업")}>시범사업 문의</button>
                 </div>
               </div>
+
               <div className="public-hero-panel">
-                <div className="public-badge">Recommended URL</div>
-                <strong>magos.co.kr/public-sector</strong>
-                <span>기존 홈페이지는 전체 플랫폼 소개로 유지하고, 공공기관·지자체·공제회에는 이 전용 링크를 전달하는 구조입니다.</span>
+                <strong>사후 보상 중심에서<br />사전예방 중심으로</strong>
+                <span>
+                  피해 발생 후 배상금을 지급하는 절차 앞단에 MRI 기반 사전 위험평가,
+                  전문가 검토, 예방조치 우선순위, 리스크 인증서를 연결합니다.
+                </span>
+                <div className="public-mini-stack">
+                  <div>대상: 도로 · 교량 · 보도 · 공원시설 · 공공건축물</div>
+                  <div>출력: MRI 리포트 · 인증서 · 대시보드 · 포렌식 자료</div>
+                </div>
               </div>
             </div>
 
             <div className="public-grid public-grid-3">
-              {["도로 · 교량", "보도 · 자전거도로", "공원시설", "공공건축물", "옹벽 · 사면", "기타 공공시설"].map((item) => (
+              {["도로", "교량", "보도", "공원시설", "공공건축물", "옹벽·사면"].map((item) => (
                 <div className="public-mini-card" key={item}>{item}</div>
               ))}
             </div>
 
-            <div className="section-head public-subhead">
-              <div className="section-label">WHY NOW</div>
-              <h2>사후 보상 중심에서 사전예방 중심으로</h2>
+            <div id="public-procedure" className="public-subhead section-head">
+              <div className="section-label">CURRENT PROCESS</div>
+              <h2>현행 절차를 이해하면 MAGOS의 위치가 명확해집니다</h2>
               <p>
-                지방자치단체가 관리하는 도로, 교량, 보도, 공원시설, 공공건축물 등 공공영조물은
-                사고 발생 시 시민 안전뿐 아니라 영조물배상 책임, 민원, 소송, 재정 부담으로 연결될 수 있습니다.
-                MAGOS는 이 절차의 앞단에 사전 리스크 평가와 예방관리 체계를 붙입니다.
+                영조물배상은 피해자, 지방자치단체, 공제회, 손해보험사가 함께 움직이는 절차입니다.
+                MAGOS는 이 절차를 대체하지 않고, 사고 발생 전 단계에 사전 리스크 평가와 예방관리 자료를 붙입니다.
               </p>
             </div>
 
-            <div className="public-flow">
-              {publicSteps.map((step, index) => (
-                <React.Fragment key={step}>
-                  <div className="public-flow-item">
-                    <div className="public-flow-no">{index + 1}</div>
-                    <p>{step}</p>
-                  </div>
-                  {index !== publicSteps.length - 1 && <div className="public-flow-arrow">→</div>}
-                </React.Fragment>
+            <div className="procedure-grid">
+              <div className="procedure-panel">
+                <div className="procedure-head">
+                  <span>01</span>
+                  <h3>배상금 지급절차</h3>
+                </div>
+                <div className="procedure-flow procedure-flow-4">
+                  {compensationProcedure.map((step, index) => (
+                    <React.Fragment key={step.no}>
+                      <div className="procedure-step">
+                        <div className="procedure-no">{step.no}</div>
+                        <div className="procedure-icon">{step.icon}</div>
+                        <strong>{step.title}</strong>
+                        <p>{step.from} → {step.to}</p>
+                      </div>
+                      {index !== compensationProcedure.length - 1 && <div className="procedure-arrow">→</div>}
+                    </React.Fragment>
+                  ))}
+                </div>
+                <div className="procedure-detail-list">
+                  {compensationProcedure.map((step) => (
+                    <div className="procedure-detail" key={step.no}>
+                      <b>{step.no}. {step.title}</b>
+                      <span>{step.desc}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="procedure-panel">
+                <div className="procedure-head">
+                  <span>02</span>
+                  <h3>공제 등록·계약 절차</h3>
+                </div>
+                <div className="registration-map">
+                  <div className="reg-actor">🏛️<strong>지방자치단체</strong></div>
+                  <div className="reg-center">🔶<strong>공제회</strong></div>
+                  <div className="reg-actor">🏦<strong>손해보험사</strong></div>
+                </div>
+                <div className="procedure-detail-list">
+                  {registrationProcedure.map((step) => (
+                    <div className="procedure-detail" key={step.no}>
+                      <b>{step.no}. {step.title}</b>
+                      <span>{step.from} → {step.to} · {step.desc}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div className="public-subhead section-head">
+              <div className="section-label">MAGOS ATTACH POINT</div>
+              <h2>MAGOS는 절차의 앞단과 뒤단을 동시에 보강합니다</h2>
+              <p>
+                핵심은 “배상금 지급 이후”가 아니라 “배상 사고 발생 이전”입니다.
+                공공시설물의 데이터를 먼저 정리하고, 위험도를 수치화하며, 기술사 검토를 통해 예방 의사결정 자료를 만듭니다.
+              </p>
+            </div>
+
+            <div className="attach-grid">
+              {magosAttachPoints.map((item) => (
+                <div className="attach-card" key={item.label}>
+                  <span>{item.label}</span>
+                  <h3>{item.title}</h3>
+                  <p>{item.desc}</p>
+                </div>
               ))}
             </div>
 
             <div className="public-columns">
               <div className="public-panel">
-                <div className="section-label">COOPERATION MODEL</div>
                 <h3>공공기관 협력모델</h3>
                 <div className="public-partner-list">
                   {publicPartners.map((partner) => (
@@ -716,28 +869,41 @@ export default function App() {
               </div>
 
               <div className="public-panel public-panel-accent">
-                <div className="section-label">OUTPUT</div>
-                <h3>지자체가 활용할 수 있는 결과물</h3>
+                <h3>지자체가 얻는 판단자료</h3>
                 <div className="public-outcome-grid">
-                  {publicOutcomes.map((item) => (
-                    <div className="public-outcome" key={item}>{item}</div>
+                  {publicOutcomes.map((outcome) => (
+                    <div className="public-outcome" key={outcome}>{outcome}</div>
                   ))}
                 </div>
                 <div className="safe-notice">
-                  표현 기준: “협력 가능성을 검토합니다”, “시범사업 모델을 제안합니다”,
-                  “배상 리스크 절감 가능성을 분석합니다”, “보험·공제 운영 개선 자료로 활용 가능합니다”.
+                  홈페이지에서는 “보험료를 절감해드립니다”가 아니라 “배상 리스크 절감 가능성을 분석합니다”,
+                  “공공시설물 사고예방 의사결정을 지원합니다”로 표현하는 것이 안전합니다.
                 </div>
               </div>
             </div>
 
             <div className="strategy-wrap">
-              <div className="section-head section-head-row">
-                <div>
-                  <div className="section-label">PUBLIC R&D ROADMAP</div>
-                  <h2>단계별 정부과제 추진전략</h2>
-                  <p>공공영조물 안전관리 시범사업으로 시작하고, 축적 데이터를 기반으로 AI·IoT·센서·데이터 R&D로 고도화합니다.</p>
-                </div>
-                <button className="btn btn-solid" onClick={() => setInquiryTemplate("정부과제·시범사업 협력 문의")}>시범사업 문의</button>
+              <div className="section-head">
+                <div className="section-label">POC ROADMAP</div>
+                <h2>시범사업 추진 순서</h2>
+                <p>
+                  MAGOS 단독 제안이 아니라, 기술사회 연계형 공공 리스크 관리 제안으로 접근하는 구조입니다.
+                </p>
+              </div>
+              <div className="poc-timeline">
+                {pocRoadmap.map((step, index) => (
+                  <div className="poc-step" key={step}>
+                    <div className="poc-no">{index + 1}</div>
+                    <p>{step}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="strategy-wrap">
+              <div className="section-head">
+                <div className="section-label">GOVERNMENT PROJECT STRATEGY</div>
+                <h2>단계별 정부과제 추진전략</h2>
               </div>
               <div className="strategy-grid">
                 {govStrategy.map((item) => (
@@ -756,15 +922,15 @@ export default function App() {
           <div className="container">
             <div className="section-head section-head-row">
               <div>
-                <div className="section-label">INSURANCE & RISK</div>
-                <h2>공제·보험 리스크 분석과 사고예방 데이터</h2>
+                <div className="section-label">INSURANCE & PUBLIC RISK</div>
+                <h2>공제·보험 절차와 연결되는 리스크 분석</h2>
                 <p>
-                  MAGOS는 영조물배상, 공공시설물 안전관리, 손해율 관리, 사고예방 데이터를
-                  하나의 의사결정 구조로 연결합니다. 핵심은 보험료 절감 보장이 아니라,
-                  배상 리스크 절감 가능성을 분석하고 공제·보험 운영 개선 자료를 제공하는 것입니다.
+                  영조물배상 리스크는 단순 보험 문제가 아니라 지자체의 안전관리, 민원, 소송,
+                  재정 부담과 연결되는 공공 리스크입니다. MAGOS는 현행 공제·보험 절차에 필요한
+                  사전 예방 데이터와 사후 분석 자료를 제공합니다.
                 </p>
               </div>
-              <button className="btn btn-outline" onClick={() => setInquiryTemplate("공제·보험 리스크 분석 문의")}>공제·보험 문의</button>
+              <button className="btn btn-solid" onClick={() => setInquiryTemplate("공제·보험 리스크 분석")}>공제·보험 협력 문의</button>
             </div>
 
             <div className="insurance-grid">
@@ -778,83 +944,13 @@ export default function App() {
 
             <div className="insurance-link-panel">
               <div>
-                <strong>영조물배상 절차의 앞단에 붙는 MAGOS 역할</strong>
+                <strong>절감효과는 보장 문구가 아니라 ‘가정 기반 분석’으로 제시합니다.</strong>
                 <p>
-                  피해자·지자체·공제회·보험사가 사고접수, 사고조사, 보상절차에 관여하는 구조라면,
-                  MAGOS는 그 이전 단계에서 공공시설물의 위험요인을 선별하고 예방 조치 판단자료를 제공하는 역할입니다.
+                  예: 연간 배상 리스크 절감 가능성 = 기존 사고건수 × 평균 손해액 × 사고율 감소 가정.
+                  실제 적용 시에는 지자체별 사고이력, 시설물 현황, 공제·보험 운영자료, 보수이력을 기반으로 별도 산정합니다.
                 </p>
               </div>
-              <button className="btn btn-solid" onClick={() => scrollToSection("public-sector")}>Public Sector 보기</button>
-            </div>
-          </div>
-        </section>
-
-        <section id="services" className="section">
-          <div className="container">
-            <div className="section-head section-head-row">
-              <div>
-                <div className="section-label">SERVICES</div>
-                <h2>무료 서비스 + 유료 정식 서비스</h2>
-                <p>
-                  무료 진단으로 진입하고, 정식 리스크 인증과 전문가 참여형 정밀평가,
-                  포렌식, 증거 패키지까지 확장됩니다.
-                </p>
-              </div>
-
-              <button className="btn btn-solid" onClick={() => scrollToSection("contact")}>
-                상담 요청
-              </button>
-            </div>
-
-            <div className="services-grid">
-              <div className="service-panel">
-                <div className="service-panel-label green">FREE SERVICES</div>
-
-                <div className="free-list">
-                  {freeServices.map((service) => (
-                    <div className="free-card" key={service.no}>
-                      <div className="free-head">
-                        <div className="free-no">{service.no}</div>
-                        <h3>{service.title}</h3>
-                      </div>
-                      <p>{service.desc}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="service-panel">
-                <div className="service-panel-label cyan">PAID SERVICES</div>
-
-                <div className="paid-grid">
-                  {paidServices.map((service) => (
-                    <div className="paid-card" key={service.top}>
-                      <div>
-                        <div className="paid-top">{service.top}</div>
-                        <h3>{service.title}</h3>
-                        <p style={{ marginTop: "10px", color: "#b7c3d4", lineHeight: 1.8 }}>
-                          {service.desc}
-                        </p>
-                      </div>
-
-                      <div style={{ marginTop: "16px" }}>
-                        <button
-                          className="btn btn-glass"
-                          style={{ width: "100%" }}
-                          onClick={() => setInquiryTemplate(service.title)}
-                        >
-                          이 서비스 문의
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="notice-box">
-                  MAGOS는 개방형 구조를 지향하며, 보험사, 공공기관, 시설물 관리자,
-                  엔지니어링 조직 등과 연계 가능한 기술 제공형 생태계를 목표로 합니다.
-                </div>
-              </div>
+              <button className="btn btn-outline" onClick={() => setInquiryTemplate("영조물배상 리스크 절감 가능성 분석")}>분석 문의</button>
             </div>
           </div>
         </section>

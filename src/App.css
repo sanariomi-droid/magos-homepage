@@ -1774,3 +1774,305 @@ a {
     border: 1px solid #999999 !important;
   }
 }
+
+/* refined public-sector procedure diagrams */
+.public-sector-v2 .public-hero-content h2 {
+  max-width: 900px;
+}
+
+.public-mini-stack {
+  display: grid;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.public-mini-stack div {
+  padding: 13px 14px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  color: #eaf7ff;
+  line-height: 1.55;
+  font-size: 14px;
+}
+
+.procedure-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  margin-top: 28px;
+}
+
+.procedure-panel {
+  padding: 28px;
+  border-radius: 32px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(113, 226, 255, 0.18);
+  box-shadow: var(--shadow);
+}
+
+.procedure-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 22px;
+}
+
+.procedure-head span {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #08111c;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.procedure-head h3 {
+  margin: 0;
+  font-size: 26px;
+  line-height: 1.35;
+}
+
+.procedure-flow {
+  display: grid;
+  align-items: stretch;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.procedure-flow-4 {
+  grid-template-columns: 1fr auto 1fr auto 1fr auto 1fr;
+}
+
+.procedure-step {
+  position: relative;
+  min-height: 190px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+  padding: 18px 14px;
+  border-radius: 26px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.035));
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.procedure-no {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  background: rgba(31, 207, 241, 0.14);
+  color: #bff5ff;
+  border: 1px solid rgba(113, 226, 255, 0.24);
+  font-weight: 900;
+  font-size: 12px;
+}
+
+.procedure-icon {
+  font-size: 34px;
+}
+
+.procedure-step strong {
+  font-size: 19px;
+  line-height: 1.35;
+}
+
+.procedure-step p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.procedure-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #bff5ff;
+  font-size: 26px;
+  font-weight: 900;
+  padding: 0 2px;
+}
+
+.procedure-detail-list {
+  margin-top: 18px;
+  display: grid;
+  gap: 10px;
+}
+
+.procedure-detail {
+  display: grid;
+  grid-template-columns: 160px 1fr;
+  gap: 14px;
+  align-items: start;
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: rgba(7, 17, 31, 0.58);
+  border: 1px solid var(--line);
+}
+
+.procedure-detail b {
+  color: #ffffff;
+  line-height: 1.55;
+}
+
+.procedure-detail span {
+  color: var(--muted);
+  line-height: 1.72;
+}
+
+.registration-map {
+  display: grid;
+  grid-template-columns: 1fr 1.08fr 1fr;
+  gap: 14px;
+  margin-top: 12px;
+  margin-bottom: 18px;
+}
+
+.reg-actor,
+.reg-center {
+  min-height: 132px;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  gap: 8px;
+  padding: 18px;
+  border-radius: 26px;
+  background: rgba(7, 17, 31, 0.66);
+  border: 1px solid var(--line);
+  font-size: 34px;
+}
+
+.reg-actor strong,
+.reg-center strong {
+  display: block;
+  font-size: 18px;
+  color: #ffffff;
+}
+
+.reg-center {
+  background: rgba(31, 207, 241, 0.1);
+  border-color: rgba(113, 226, 255, 0.22);
+}
+
+.attach-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  margin-top: 28px;
+  margin-bottom: 28px;
+}
+
+.attach-card {
+  padding: 24px;
+  border-radius: 28px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
+  border: 1px solid rgba(113, 226, 255, 0.16);
+  box-shadow: var(--shadow-soft);
+}
+
+.attach-card span {
+  display: inline-flex;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(99, 230, 190, 0.11);
+  border: 1px solid rgba(99, 230, 190, 0.22);
+  color: #bcffe6;
+  font-size: 12px;
+  font-weight: 900;
+  margin-bottom: 14px;
+}
+
+.attach-card h3 {
+  margin: 0;
+  font-size: 23px;
+  line-height: 1.35;
+}
+
+.attach-card p {
+  margin: 10px 0 0;
+  color: var(--muted);
+  line-height: 1.82;
+}
+
+.poc-timeline {
+  display: grid;
+  gap: 12px;
+}
+
+.poc-step {
+  display: grid;
+  grid-template-columns: 48px 1fr;
+  gap: 14px;
+  align-items: center;
+  padding: 16px 18px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--line);
+}
+
+.poc-no {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #08111c;
+  font-weight: 900;
+}
+
+.poc-step p {
+  margin: 0;
+  color: #eaf7ff;
+  line-height: 1.7;
+}
+
+@media (max-width: 1100px) {
+  .procedure-flow-4 {
+    grid-template-columns: 1fr;
+  }
+
+  .procedure-arrow {
+    transform: rotate(90deg);
+    padding: 6px 0;
+  }
+
+  .registration-map,
+  .attach-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .procedure-detail {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 560px) {
+  .procedure-panel {
+    padding: 20px;
+    border-radius: 24px;
+  }
+
+  .procedure-step {
+    min-height: 150px;
+  }
+
+  .procedure-head h3 {
+    font-size: 22px;
+  }
+
+  .poc-step {
+    grid-template-columns: 1fr;
+  }
+}
