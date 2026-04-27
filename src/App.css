@@ -2076,3 +2076,40 @@ a {
     grid-template-columns: 1fr;
   }
 }
+
+/* EmailJS contact form status */
+.btn:disabled,
+.chip:disabled {
+  opacity: 0.58;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.form-status {
+  margin-top: 14px;
+  padding: 14px 16px;
+  border-radius: 18px;
+  line-height: 1.7;
+  font-size: 14px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.05);
+  color: #dbe6f3;
+}
+
+.form-status-sending {
+  background: rgba(31, 207, 241, 0.09);
+  border-color: rgba(113, 226, 255, 0.22);
+  color: #bff5ff;
+}
+
+.form-status-success {
+  background: rgba(99, 230, 190, 0.1);
+  border-color: rgba(99, 230, 190, 0.24);
+  color: #bcffe6;
+}
+
+.form-status-error {
+  background: rgba(255, 144, 144, 0.1);
+  border-color: rgba(255, 144, 144, 0.24);
+  color: #ffd0d0;
+}

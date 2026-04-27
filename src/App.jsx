@@ -1,4 +1,10 @@
 import React, { useEffect, useMemo, useState } from "react";
+import emailjs from "@emailjs/browser";
+
+const CONTACT_EMAIL = "ceo@magos.ai.kr";
+const EMAILJS_SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID || "";
+const EMAILJS_TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID || "";
+const EMAILJS_PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY || "";
 
 const platformLayers = [
   {
@@ -303,6 +309,12 @@ export default function App() {
     message: "",
   });
 
+  const [submitState, setSubmitState] = useState({
+    loading: false,
+    status: "idle",
+    message: "",
+  });
+
   const kdMap = { A: 1.0, B: 1.05, C: 1.1, D: 1.15 };
   const kiMap = { 보통: 1.0, 중요: 1.08, 중대: 1.15 };
 
@@ -366,6 +378,9 @@ export default function App() {
 
   const handleContactChange = (key, value) => {
     setContactForm((prev) => ({ ...prev, [key]: value }));
+    if (submitState.status !== "idle") {
+      setSubmitState({ loading: false, status: "idle", message: "" });
+    }
   };
 
   const setInquiryTemplate = (type) => {
@@ -377,9 +392,90 @@ export default function App() {
     scrollToSection("contact");
   };
 
-  const handleSubmit = (e) => {
+  const sendContactEmail = async (requestAction = "문의 접수", inquiryType = contactType) => {
+    const trimmedForm = {
+      name: contactForm.name.trim(),
+      company: contactForm.company.trim(),
+      email: contactForm.email.trim(),
+      phone: contactForm.phone.trim(),
+      message: contactForm.message.trim(),
+    };
+
+    if (!trimmedForm.name || !trimmedForm.email || !trimmedForm.message) {
+      alert("성명, 이메일, 상담 내용을 입력해 주세요.");
+      setSubmitState({
+        loading: false,
+        status: "error",
+        message: "성명, 이메일, 상담 내용을 입력하면 ceo@magos.ai.kr로 문의가 접수됩니다.",
+      });
+      return;
+    }
+
+    if (!EMAILJS_SERVICE_ID || !EMAILJS_TEMPLATE_ID || !EMAILJS_PUBLIC_KEY) {
+      alert("EmailJS 환경변수가 설정되어 있지 않습니다. .env.local과 Vercel 환경변수를 확인해 주세요.");
+      setSubmitState({
+        loading: false,
+        status: "error",
+        message: "EmailJS 설정값이 없어 전송하지 못했습니다. SERVICE_ID, TEMPLATE_ID, PUBLIC_KEY를 설정해 주세요.",
+      });
+      return;
+    }
+
+    const templateParams = {
+      to_email: CONTACT_EMAIL,
+      from_name: trimmedForm.name,
+      company: trimmedForm.company || "미입력",
+      reply_to: trimmedForm.email,
+      phone: trimmedForm.phone || "미입력",
+      inquiry_type: inquiryType,
+      request_action: requestAction,
+      message: trimmedForm.message,
+      page_url: typeof window !== "undefined" ? window.location.href : "",
+      submitted_at: new Date().toLocaleString("ko-KR"),
+    };
+
+    try {
+      setSubmitState({ loading: true, status: "sending", message: "문의 내용을 전송하는 중입니다." });
+
+      await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams, {
+        publicKey: EMAILJS_PUBLIC_KEY,
+      });
+
+      setSubmitState({
+        loading: false,
+        status: "success",
+        message: "문의가 접수되었습니다. MAGOS에서 확인 후 연락드리겠습니다.",
+      });
+
+      alert("문의가 접수되었습니다. MAGOS에서 확인 후 연락드리겠습니다.");
+
+      setContactForm({
+        name: "",
+        company: "",
+        email: "",
+        phone: "",
+        message: "",
+      });
+      setContactType("정식 리스크 인증");
+    } catch (error) {
+      console.error("EmailJS 전송 오류:", error);
+      setSubmitState({
+        loading: false,
+        status: "error",
+        message: "문의 전송 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.",
+      });
+      alert("문의 전송 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.");
+    }
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    alert("현재는 시연용 문의 폼입니다. 다음 단계에서 EmailJS 또는 서버 연동을 연결하면 실제 전송됩니다.");
+    await sendContactEmail("문의 접수", contactType);
+  };
+
+  const handleContactAction = async (requestAction) => {
+    setContactType(requestAction);
+    await sendContactEmail(requestAction, requestAction);
   };
 
   return (
@@ -1212,6 +1308,7 @@ export default function App() {
                       <input
                         type="text"
                         placeholder="이름을 입력하세요"
+                        required
                         value={contactForm.name}
                         onChange={(e) => handleContactChange("name", e.target.value)}
                       />
@@ -1232,6 +1329,7 @@ export default function App() {
                       <input
                         type="email"
                         placeholder="email@example.com"
+                        required
                         value={contactForm.email}
                         onChange={(e) => handleContactChange("email", e.target.value)}
                       />
@@ -1257,30 +1355,39 @@ export default function App() {
                     <label>상담 내용</label>
                     <textarea
                       placeholder="프로젝트 개요, 구조물 종류, 현재 상황, 보유 데이터, 요청사항 등을 입력하세요."
+                      required
                       value={contactForm.message}
                       onChange={(e) => handleContactChange("message", e.target.value)}
                     />
                   </div>
 
                   <div className="form-actions">
-                    <button type="submit" className="btn btn-solid">
-                      문의 접수
+                    <button type="submit" className="btn btn-solid" disabled={submitState.loading}>
+                      {submitState.loading ? "전송 중..." : "문의 접수"}
                     </button>
                     <button
                       type="button"
                       className="btn btn-glass"
-                      onClick={() => setInquiryTemplate("상담 예약")}
+                      disabled={submitState.loading}
+                      onClick={() => handleContactAction("상담 예약")}
                     >
                       상담 예약
                     </button>
                     <button
                       type="button"
                       className="btn btn-outline"
-                      onClick={() => setInquiryTemplate("견적 요청")}
+                      disabled={submitState.loading}
+                      onClick={() => handleContactAction("견적 요청")}
                     >
                       견적 요청
                     </button>
                   </div>
+
+                  {submitState.message && (
+                    <div className={`form-status form-status-${submitState.status}`}>
+                      {submitState.message}
+                    </div>
+                  )}
                 </form>
               </div>
             </div>
