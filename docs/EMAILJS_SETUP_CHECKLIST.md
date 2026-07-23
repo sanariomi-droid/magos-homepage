@@ -1,18 +1,18 @@
-# EmailJS 상담메일 최종 설정 체크리스트
+# EmailJS 상담메일 설정 체크리스트
 
-홈페이지 코드는 EmailJS REST API로 직접 전송하도록 완성되어 있습니다. 실제 수신은 EmailJS 계정 설정이 모두 정상이어야 합니다.
+홈페이지는 `/api/contact` Vercel Function을 통해 EmailJS REST API를 호출합니다. 코드 배포가 성공해도 EmailJS 계정 설정이 잘못되어 있으면 메일은 전송되지 않습니다.
 
 ## 1. Email Service
 
 - Service ID: `service_grnbxc8`
-- Gmail 계정 연결상태: Connected
-- EmailJS의 `Test Service` 시험메일: 성공
-- Gmail 인증이 만료되었다면 Reconnect 실행
+- Gmail 연결 상태: Connected
+- EmailJS `Test Service` 시험: 성공
+- 인증 만료 시 Gmail Reconnect
 
 ## 2. Email Template
 
 - Template ID: `template_ry142uj`
-- To Email: `ceo@magos.ai.kr`로 고정 권장
+- To Email: `ceo@magos.ai.kr` 고정 권장
 - Reply To: `{{reply_to}}`
 - Subject: `[MAGOS 상담] {{inquiry_type}} · {{from_name}}`
 
@@ -34,14 +34,29 @@
 {{message}}
 ```
 
-## 3. Public Key
+## 3. Vercel 환경변수
 
-- Public Key: `GvUELP6idsY4ppGNa`
-- Private Key는 홈페이지·GitHub·Vercel 환경변수에 넣지 않음
+권장:
+
+```text
+EMAILJS_SERVICE_ID=service_grnbxc8
+EMAILJS_TEMPLATE_ID=template_ry142uj
+EMAILJS_PUBLIC_KEY=GvUELP6idsY4ppGNa
+```
+
+선택사항:
+
+```text
+EMAILJS_PRIVATE_KEY=
+```
+
+Private Key 사용을 강제한 EmailJS 계정에서만 Vercel 서버 환경변수로 등록합니다. GitHub에는 절대 넣지 않습니다.
+
+기존 `VITE_EMAILJS_*` 이름도 호환되지만, 신규 설정은 `EMAILJS_*` 이름을 권장합니다.
 
 ## 4. 허용 도메인
 
-EmailJS에서 도메인 허용목록을 사용하는 경우 실제 사용하는 출처를 모두 등록합니다.
+EmailJS Domains allowlist를 사용하는 경우:
 
 ```text
 https://magos.ai.kr
@@ -50,35 +65,24 @@ https://magos.co.kr
 https://www.magos.co.kr
 ```
 
-Vercel Preview 주소에서도 시험하려면 해당 `https://...vercel.app` 출처도 임시 등록합니다.
+Preview에서 시험할 때만 해당 `https://...vercel.app` 출처를 임시 추가합니다.
 
-## 5. Vercel 환경변수
+## 5. 오류별 확인
 
-세 변수 모두 Production·Preview·Development에 동일하게 등록합니다.
-
-```text
-VITE_EMAILJS_SERVICE_ID=service_grnbxc8
-VITE_EMAILJS_TEMPLATE_ID=template_ry142uj
-VITE_EMAILJS_PUBLIC_KEY=GvUELP6idsY4ppGNa
-```
-
-저장 후 반드시 새로운 Production 배포를 생성합니다.
-
-## 6. 오류별 확인
-
-- 400: 서비스·템플릿·공개키·템플릿 변수 확인
+- 400: 요청 형식·서비스·템플릿·공개키 확인
 - 401: 인증정보 확인
-- 403: 허용 도메인·보안설정 확인
-- 404: Service ID 또는 Template ID 확인
+- 403: EmailJS 보안설정·허용 도메인 확인
+- 404: Service ID·Template ID 확인
 - 412: Gmail 서비스 재인증
 - 422: 템플릿 필수 변수 확인
-- 429: 전송속도 또는 월간 한도 확인
-- 네트워크: CSP, 브라우저 확장 프로그램, 방화벽 확인
+- 429: 1초당 요청 제한 또는 월간 한도 확인
+- 503: Vercel Function에서 EmailJS 네트워크 연결 실패
+- 504: EmailJS 응답시간 초과
 
-## 7. 최종 시험
+## 6. API 진단
 
-1. 시크릿 창에서 실제 도메인 접속
-2. 상담양식 전송
-3. 홈페이지 성공문구와 접수번호 확인
-4. EmailJS Email History 확인
-5. `ceo@magos.ai.kr` 받은편지함·스팸함 확인
+```text
+https://magos.ai.kr/api/contact
+```
+
+`configured: true`인지 확인합니다. 이 값은 ID·키의 존재 여부만 뜻하며, Gmail 인증과 템플릿 수신자까지 보장하지는 않습니다.

@@ -1,0 +1,42 @@
+MAGOS 홈페이지 v3.3.0 전체교체 시작 안내
+========================================
+
+1. 기존 도메인이 연결된 Vercel의 magos-homepage 프로젝트를 그대로 사용합니다.
+   새 Vercel 프로젝트를 만들지 않습니다.
+
+2. Git 저장소가 없는 새 작업폴더라면 먼저 복제합니다.
+
+   cd "C:\MAGOS 홈페이지"
+   git clone https://github.com/sanariomi-droid/magos-homepage.git magos-homepage-v33
+   cd magos-homepage-v33
+
+3. .git 폴더만 남기고 기존 파일을 삭제한 뒤,
+   이 ZIP 안의 내용 전체(api, src, public, package.json 등)를 복사합니다.
+
+4. 필수 경로가 모두 True인지 확인합니다.
+
+   Test-Path .\api\contact.js
+   Test-Path .\src\App.jsx
+   Test-Path .\package.json
+
+5. 검사와 빌드를 실행합니다.
+
+   npm ci
+   npm run validate
+   npm test
+   npm run build
+
+6. GitHub에 반영합니다.
+
+   git add -A
+   git commit -m "MAGOS 홈페이지 v3.3 Vercel 안정화 전체교체"
+   git push origin main
+
+7. Vercel 자동 배포 성공 후 확인합니다.
+
+   https://magos.ai.kr/api/contact
+   https://magos.ai.kr
+   https://www.magos.co.kr
+
+정상 API 버전: 3.3.0
+정상 문의폼 표시: Contact Relay v3.3.0

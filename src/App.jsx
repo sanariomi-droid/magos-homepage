@@ -25,7 +25,7 @@ const LEDGERPROOF_IS_DOCUMENT = /\.pdf(?:$|[?#])/i.test(LEDGERPROOF_URL);
 // 실패 사유를 서버 응답으로 정확히 표시합니다.
 const CONTACT_API_URL = "/api/contact";
 const EMAIL_REQUEST_TIMEOUT_MS = 15000;
-const CONTACT_RELAY_VERSION = "3.2.0";
+const CONTACT_RELAY_VERSION = "3.3.0";
 
 const navItems = [
   ["field", "현장 적용"],
@@ -349,8 +349,13 @@ function describeEmailError(status, detail) {
     403: "EmailJS 보안설정 또는 허용 도메인에 현재 홈페이지 주소를 추가해 주세요.",
     404: "EmailJS 서비스 ID 또는 템플릿 ID를 찾을 수 없습니다.",
     412: "EmailJS에 연결된 Gmail 계정을 다시 인증해 주세요.",
+    408: "상담메일 서버 응답 시간이 초과되었습니다.",
     422: "EmailJS 템플릿의 필수 입력값을 확인해 주세요.",
     429: "전송 요청이 너무 빠르거나 월간 전송한도를 초과했습니다. 잠시 후 다시 시도해 주세요.",
+    500: "Vercel 상담메일 환경변수 설정을 확인해 주세요.",
+    502: "EmailJS가 요청을 거절했습니다. 상세 응답을 확인해 주세요.",
+    503: "Vercel 상담메일 함수에서 EmailJS에 연결하지 못했습니다.",
+    504: "EmailJS 응답 시간이 초과되었습니다.",
   };
   const guide = messages[Number(status)] || "EmailJS 서비스 연결과 네트워크 상태를 확인해 주세요.";
   return `${guide}${normalized ? ` 상세: ${normalized.slice(0, 240)}` : ""}`;

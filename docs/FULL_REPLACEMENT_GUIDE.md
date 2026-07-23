@@ -1,44 +1,61 @@
-# GitHub 전체교체 안내
+# MAGOS v3.3 전체교체 가이드
 
-## 1. 기존 저장소 백업
+## 권장 방식: 새로 Clone 후 교체
 
-기존 프로젝트를 ZIP으로 내려받거나 로컬 폴더를 복사합니다.
+```powershell
+cd "C:\MAGOS 홈페이지"
+git clone https://github.com/sanariomi-droid/magos-homepage.git magos-homepage-v33
+cd magos-homepage-v33
+```
 
-## 2. 저장소 파일 교체
+현재 폴더에서 `.git`만 남기고 삭제합니다.
 
-`.git` 폴더를 유지하여 기존 GitHub 연결을 보존하려면 `.git`만 남기고 나머지를 삭제한 뒤, 이 전체교체본의 내용을 저장소 최상위에 복사합니다.
+```powershell
+Get-ChildItem -Force |
+Where-Object { $_.Name -ne ".git" } |
+Remove-Item -Recurse -Force
+```
 
-GitHub 웹에서 업로드하는 경우 기존 파일을 모두 삭제한 뒤 이 ZIP의 **폴더 안 내용**을 저장소 최상위에 업로드합니다. 상위 폴더가 한 단계 더 중첩되지 않게 주의합니다.
+ZIP을 풀어 나온 **내용 전체**를 `magos-homepage-v33` 폴더에 복사합니다. 바깥 폴더를 한 번 더 넣지 않습니다.
 
-## 3. 로컬 확인
+복사 후 필수 경로 확인:
+
+```powershell
+Test-Path .\api\contact.js
+Test-Path .\src\App.jsx
+Test-Path .\package.json
+```
+
+모두 `True`여야 합니다.
+
+## 설치·검증·빌드
 
 ```powershell
 npm ci
-npm run dev
-```
-
-확인 후:
-
-```powershell
-Ctrl + C
+npm run validate
+npm test
 npm run build
 ```
 
-## 4. GitHub 업로드
+## GitHub 반영
 
 ```powershell
+git status
+git remote -v
 git add -A
-git commit -m "MAGOS 홈페이지 v3.1 전체교체"
+git commit -m "MAGOS 홈페이지 v3.3 Vercel 안정화 전체교체"
 git push origin main
 ```
 
-## 5. Vercel
+`git remote -v`에 origin이 없을 때만:
 
-GitHub `main` 커밋 후 자동 배포를 기다립니다. 환경변수를 변경했다면 캐시 없이 Production 재배포를 실행합니다.
+```powershell
+git remote add origin https://github.com/sanariomi-droid/magos-homepage.git
+```
 
-## 6. 배포 후 확인
+## 주의
 
-- 홈페이지: `https://magos.ai.kr/`
-- 공개 PDF: `https://magos.ai.kr/documents/MAGOS_LedgerProof_PoC_v0.1.pdf`
-- 상담메일: 성공문구와 EmailJS History 확인
-- 두 번째 도메인도 같은 Production 배포에 연결되었는지 확인
+- `git init` 후 원격 저장소 이력을 강제 덮어쓰는 방식보다 Clone 방식이 안전합니다.
+- `node_modules`와 `dist`를 복사하거나 업로드하지 않습니다.
+- 기존 도메인이 연결된 Vercel 프로젝트를 유지합니다.
+- 새 커밋이 올라가면 기존 Vercel 프로젝트가 자동으로 Production 배포합니다.
