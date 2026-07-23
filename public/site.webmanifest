@@ -1,0 +1,13 @@
+{
+  "name": "MAGOS Evidence Envelope",
+  "short_name": "MAGOS",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f7f3ea",
+  "theme_color": "#071a37",
+  "lang": "ko-KR",
+  "icons": [
+    { "src": "/assets/favicon.png", "sizes": "64x64", "type": "image/png" },
+    { "src": "/assets/magos-logo.png", "sizes": "1024x1024", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

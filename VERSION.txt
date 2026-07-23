@@ -1,0 +1,2 @@
+MAGOS Homepage v3.2.0
+Contact delivery: Vercel Function /api/contact -> EmailJS REST
